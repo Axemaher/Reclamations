@@ -1,36 +1,43 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-
-function Home() {
-  return <h1>Home Page</h1>;
-}
-
-function About() {
-  return <h1>About Page</h1>;
-}
-
-function Contact() {
-  return <h1>Contact Page</h1>;
-}
+import '../App.scss';
+import ProtectedRoute from "./ProtectedRoute";
+import Layout from "../components/Layout/Layout";
+import HomePage from "../pages/HomePage/HomePage";
+import LoginPage from "../pages/LoginPage/LoginPage";
+import RegisterPage from "../pages/RegisterPage/RegisterPage";
+import DashboardPage from "../pages/DashboardPage/DashboardPage";
 
 
 
 function App() {
+  const [userLogged, setUserLogged] = useState(null);
+
 
   return (
+    <Layout>
     <BrowserRouter>
-
       <nav>
-        <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
-        <Link to="/contact">Contact</Link>
+        <Link to="/"> Home </Link>|
+        <Link to="/login"> Login </Link>|
+        <Link to="/register"> Register </Link>|
+        <Link to="/dashboard"> Dashboard </Link>
       </nav>
-
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage setUserLogged={setUserLogged}/>} />
+        <Route path="/register" element={<RegisterPage setUserLogged={setUserLogged}/>} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute userLogged={userLogged}>
+              <DashboardPage setUserLogged={setUserLogged}/>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
+    </Layout>
   )
 }
 
