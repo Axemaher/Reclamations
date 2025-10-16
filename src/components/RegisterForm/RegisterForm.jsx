@@ -1,22 +1,209 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, addDoc, setDoc, } from "firebase/firestore"; 
+import { db } from "../../app/firebaseConfig";
 
 function RegisterForm({ setUserLogged }) {
 
   const navigate = useNavigate();
+  const auth = getAuth();
 
 
-  const handleRegister = async() => {
-    // register
-    
-    // after succes register
-    setUserLogged(true);
-    return navigate(`/dashboard/`, { replace: true });
+  const [emailInUse, setEmailInUse] = useState(null)
+  const [registerData, setRegisterData] = useState({
+    firstName: 'Marcin',
+    lastName: 'Boczkowski',
+    email: 'mb2@gm.pl',
+    password: '123456',
+    confirmPassword: '123456'
+  });
+
+  const handleOnChange = (e) => {
+    setRegisterData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
   };
 
+
+  const [inputErrors, setInputErrors] = useState({
+    firstNameError: null,
+    lastNameError: null,
+    emailError: null,
+    passwordError: null,
+    confirmPasswordError: null
+  });
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const validators = {
+    firstName: v => v.trim().length >= 3,
+    lastName: v => v.trim().length >= 3,
+    email: v => emailPattern.test(v),
+    password: v => v.length >= 6,
+    confirmPassword: v => v.length >= 6 && v === registerData.password,
+  };
+
+  const validateField = (name, value) => {
+  if (!validators[name]) return;
+  const isValid = validators[name](value);
+  setInputErrors(prevState => ({
+      ...prevState,
+      [`${name}Error`]: !isValid
+    }))
+};
+
+  const handleOnBlur = (e) => {
+    const { name, value } = e.target;
+    validateField(name, value);
+  }
+
+  
+
+  const validationCorrectCheck = () => {
+    const newErrors = {};
+
+    //get all input names from registerData
+    Object.keys(registerData).forEach(key => {
+      const value = registerData[key];
+
+      //exist valid function for this input in validators and check data
+      //if validator not exist or data ok return true
+      const inputdDataCorrect = validators[key] ? validators[key](value) : true;
+      newErrors[`${key}Error`] = !inputdDataCorrect;
+    });
+
+    setInputErrors(prevState => ({ ...prevState, ...newErrors }));
+
+    // if any error = true return false
+    const anyErrorsNow = Object.values(newErrors).some(e => e === true)
+
+    if(anyErrorsNow) {
+      return false
+    } else return true
+  }
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    
+    if(validationCorrectCheck()){
+      
+      createUserWithEmailAndPassword(auth, registerData.email, registerData.password)
+        .then(async(userCredential) => {
+          // signed up 
+          const {uid} = userCredential.user;
+          setUserLogged(true);
+
+          await setDoc(doc(db, "users", uid, "profile", "main"), {
+            firstName: registerData.firstName,
+            lastName: registerData.lastName,
+          });
+          // await addDoc(collection(db, "users", uid, "reclamations"), {
+          //   title: "Reklamacja numer 123",
+          //   description: "Opis problemu...",
+          //   date: new Date(),
+          //   status: "pending"
+          // });
+
+          console.log("all done")
+          navigate(`/dashboard/`, { replace: true });
+        })
+        .catch((error) => {
+          console.log(error.code)
+          if(error.code === 'auth/email-already-in-use'){
+            setEmailInUse(true);
+          }
+        });
+    }
+  };
+
+
+  const {firstNameError, lastNameError, emailError, passwordError, confirmPasswordError} = inputErrors;
   return (
-    <div>
-      <button onClick={handleRegister}>Register</button>
-    </div>
+    <>
+      <form onSubmit={handleRegister}>
+        <legend>Rejestracja</legend>
+          <p>
+            <label htmlFor="firstName">Imię</label>
+            <input
+                  type="text"
+                  onChange={handleOnChange}
+                  onBlur={handleOnBlur}
+                  name="firstName"
+                  value={registerData.firstName}
+                  id="firstName"
+                  // required
+                  />
+            <span>{firstNameError ? `Wpisz imię (co najmniej 3 znaki)` : ""}</span>
+          </p>
+
+          <p>
+          <label htmlFor="lastName">Nazwisko</label>
+          <input
+                type="text"
+                onChange={handleOnChange}
+                onBlur={handleOnBlur}
+                name="lastName"
+                value={registerData.lastName}
+                id="lastName"
+                // required
+                />
+          <span>{lastNameError ? `Wpisz nazwisko (co najmniej 3 znaki)` : ""}</span>
+        </p>
+
+        <p>
+          <label htmlFor="email">Email</label>
+          <input
+                type="email"
+                onChange={handleOnChange}
+                onBlur={handleOnBlur}
+                name="email"
+                value={registerData.email}
+                id="email"
+                // required
+                />
+          <span>{emailError ? `Wpisz poprawny adres mailowy` : ""}</span>
+        </p>
+
+        <p>
+          <label htmlFor="password">Hasło</label>
+          <input
+                type="password"
+                onChange={handleOnChange}
+                onBlur={handleOnBlur}
+                name="password"
+                value={registerData.password}
+                id="password"
+                // required
+                />
+          <span>{passwordError ? `Wpisz hasło (co najmniej 6 znaków)` : ""}</span>
+        </p>
+
+        <p>
+          <label htmlFor="confirmPassword">Potwierdź hasło</label>
+          <input
+                type="password"
+                onChange={handleOnChange}
+                onBlur={handleOnBlur}
+                name="confirmPassword"
+                value={registerData.confirmPassword}
+                id="confirmPassword"
+                // required
+                />
+          <span>{confirmPasswordError ? `Hasła nie są takie same lub hasło jest za krótkie (minimum 6 znaków)` : ""}</span>
+        </p>
+
+        <button type="submit" >Zarejestruj się</button>
+        {emailInUse ? 
+        <>
+          <span>Nie możesz się zarejestrować, na podany email istnieje już zarejestrowane konto</span>
+          <Link to="/login"> Zaloguj się </Link>
+        </>:""
+        }
+        
+      </form>
+    </>
   );
 }
 
