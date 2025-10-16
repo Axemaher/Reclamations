@@ -79,9 +79,7 @@ function RegisterForm({ setUserLogged }) {
     // if any error = true return false
     const anyErrorsNow = Object.values(newErrors).some(e => e === true)
 
-    if(anyErrorsNow) {
-      return false
-    } else return true
+    if(anyErrorsNow) { return false } else return true
   }
 
   const handleRegister = (e) => {

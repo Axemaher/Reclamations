@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import '../App.scss';
 import ProtectedRoute from "./ProtectedRoute";
@@ -7,12 +7,41 @@ import HomePage from "../pages/HomePage/HomePage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import DashboardPage from "../pages/DashboardPage/DashboardPage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+const auth = getAuth();
+
+
+
+// onAuthStateChanged(auth, (user) => {
+//   if (user) {
+//     // User is signed in, see docs for a list of available properties
+//     // https://firebase.google.com/docs/reference/js/auth.user
+//     const uid = user.uid;
+//     // ...
+//   } else {
+//     // User is signed out
+//     // ...
+//   }
+// });
 
 
 function App() {
   const [userLogged, setUserLogged] = useState(null);
 
+
+ useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    console.log(user)
+    if (user) {
+      setUserLogged(true);
+    } else {
+      setUserLogged(false);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
 
   return (
     <Layout>

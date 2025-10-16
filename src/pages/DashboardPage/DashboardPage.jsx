@@ -1,13 +1,20 @@
-import { useNavigate } from "react-router-dom";
-
+import { getAuth, signOut } from "firebase/auth";
 
 function DashboardPage({setUserLogged}) {
-  const navigate = useNavigate();
   
+  const auth = getAuth();
+
+
   const handleLogout = async() => {
 
-    setUserLogged(false)
-    return navigate(`/`, { replace: true });
+
+    signOut(auth).then(() => {
+    
+     setUserLogged(false)
+
+    }).catch((error) => {
+      console.log(error)
+    });
   }
 
   return (
