@@ -4,14 +4,9 @@ function DashboardPage({setUserLogged}) {
   
   const auth = getAuth();
 
-
   const handleLogout = async() => {
-
-
     signOut(auth).then(() => {
-    
      setUserLogged(false)
-
     }).catch((error) => {
       console.log(error)
     });

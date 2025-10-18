@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, addDoc, setDoc, } from "firebase/firestore"; 
+import { doc, setDoc, } from "firebase/firestore"; 
 import { db } from "../../app/firebaseConfig";
 
 function RegisterForm({ setUserLogged }) {
 
   const navigate = useNavigate();
   const auth = getAuth();
-
 
   const [emailInUse, setEmailInUse] = useState(null)
   const [registerData, setRegisterData] = useState({
@@ -26,7 +24,6 @@ function RegisterForm({ setUserLogged }) {
       [e.target.name]: e.target.value,
     }));
   };
-
 
   const [inputErrors, setInputErrors] = useState({
     firstNameError: null,
@@ -46,13 +43,13 @@ function RegisterForm({ setUserLogged }) {
   };
 
   const validateField = (name, value) => {
-  if (!validators[name]) return;
-  const isValid = validators[name](value);
-  setInputErrors(prevState => ({
-      ...prevState,
-      [`${name}Error`]: !isValid
-    }))
-};
+    if (!validators[name]) return;
+    const isValid = validators[name](value);
+    setInputErrors(prevState => ({
+        ...prevState,
+        [`${name}Error`]: !isValid
+      }))
+  };
 
   const handleOnBlur = (e) => {
     const { name, value } = e.target;
@@ -78,7 +75,6 @@ function RegisterForm({ setUserLogged }) {
 
     // if any error = true return false
     const anyErrorsNow = Object.values(newErrors).some(e => e === true)
-
     if(anyErrorsNow) { return false } else return true
   }
 
@@ -86,34 +82,32 @@ function RegisterForm({ setUserLogged }) {
     e.preventDefault();
     
     if(validationCorrectCheck()){
-      
       createUserWithEmailAndPassword(auth, registerData.email, registerData.password)
-        .then(async(userCredential) => {
-          // signed up 
-          const {uid} = userCredential.user;
-          setUserLogged(true);
+      .then(async(userCredential) => {
+        // signed up 
+        const {uid} = userCredential.user;
+        setUserLogged(true);
 
-          await setDoc(doc(db, "users", uid, "profile", "main"), {
-            firstName: registerData.firstName,
-            lastName: registerData.lastName,
-          });
-          // await addDoc(collection(db, "users", uid, "reclamations"), {
-          //   title: "Reklamacja numer 123",
-          //   description: "Opis problemu...",
-          //   date: new Date(),
-          //   status: "pending"
-          // });
-
-          console.log("all done")
-          navigate(`/dashboard/`, { replace: true });
-        })
-        .catch((error) => {
-          console.log(error.code)
-          if(error.code === 'auth/email-already-in-use'){
-            setEmailInUse(true);
-          }
+        await setDoc(doc(db, "users", uid, "profile", "main"), {
+          firstName: registerData.firstName,
+          lastName: registerData.lastName,
         });
-    }
+        // await addDoc(collection(db, "users", uid, "reclamations"), {
+        //   title: "Reklamacja numer 123",
+        //   description: "Opis problemu...",
+        //   date: new Date(),
+        //   status: "pending"
+        // });
+
+        console.log("all done")
+        navigate(`/dashboard/`, { replace: true });
+      })
+      .catch((error) => {
+        if(error.code === 'auth/email-already-in-use'){
+          setEmailInUse(true);
+        }
+      });
+      }
   };
 
 
@@ -135,7 +129,6 @@ function RegisterForm({ setUserLogged }) {
                   />
             <span>{firstNameError ? `Wpisz imię (co najmniej 3 znaki)` : ""}</span>
           </p>
-
           <p>
           <label htmlFor="lastName">Nazwisko</label>
           <input
@@ -149,7 +142,6 @@ function RegisterForm({ setUserLogged }) {
                 />
           <span>{lastNameError ? `Wpisz nazwisko (co najmniej 3 znaki)` : ""}</span>
         </p>
-
         <p>
           <label htmlFor="email">Email</label>
           <input
@@ -163,7 +155,6 @@ function RegisterForm({ setUserLogged }) {
                 />
           <span>{emailError ? `Wpisz poprawny adres mailowy` : ""}</span>
         </p>
-
         <p>
           <label htmlFor="password">Hasło</label>
           <input
@@ -177,7 +168,6 @@ function RegisterForm({ setUserLogged }) {
                 />
           <span>{passwordError ? `Wpisz hasło (co najmniej 6 znaków)` : ""}</span>
         </p>
-
         <p>
           <label htmlFor="confirmPassword">Potwierdź hasło</label>
           <input
@@ -191,7 +181,6 @@ function RegisterForm({ setUserLogged }) {
                 />
           <span>{confirmPasswordError ? `Hasła nie są takie same lub hasło jest za krótkie (minimum 6 znaków)` : ""}</span>
         </p>
-
         <button type="submit" >Zarejestruj się</button>
         {emailInUse ? 
         <>
@@ -199,7 +188,6 @@ function RegisterForm({ setUserLogged }) {
           <Link to="/login"> Zaloguj się </Link>
         </>:""
         }
-        
       </form>
     </>
   );

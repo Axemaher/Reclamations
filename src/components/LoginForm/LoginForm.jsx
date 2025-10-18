@@ -1,6 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { getAuth, setPersistence, signInWithEmailAndPassword, browserLocalPersistence } from "firebase/auth";
-
 import { useState } from "react";
 
 
@@ -66,27 +65,26 @@ function LoginForm({ setUserLogged }) {
            setPersistence(auth, browserLocalPersistence	)
           .then(() => {
             return signInWithEmailAndPassword(auth, loginData.email, loginData.password)
-                  .then((userCredential) => {
+                  .then(() => {
                     // Signed in 
-                    const user = userCredential.user.uid;
                     setUserLogged(true);
                     navigate(`/dashboard/`, { replace: true });
-                    console.log(user)
                   })
                   .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
+                    console.log(error.code)
+                    if(error.code === "auth/invalid-credential") {
+                      setDataIncorrect(true)
+                    }
                   });
           })
           .catch((error) => {
             // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
+            console.log(error.code)
           });
         }
       };
 
-      const {emailError, passwordError} = inputErrors;
+    const {emailError, passwordError} = inputErrors;
   return (
     <>
       <form onSubmit={handleLogin}>
@@ -104,7 +102,6 @@ function LoginForm({ setUserLogged }) {
                 />
           <span>{emailError ? `Wpisz poprawny adres mailowy` : ""}</span>
         </p>
-
         <p>
           <label htmlFor="password">Hasło</label>
           <input
@@ -119,7 +116,12 @@ function LoginForm({ setUserLogged }) {
           <span>{passwordError ? `Wpisz hasło (co najmniej 6 znaków)` : ""}</span>
         </p>
         <button type="submit">Zaloguj się</button>
-          <span>{dataIncorrect ? `Wprowadzony email lub hasło jest nieprawidłowe` : ""}</span>
+        {dataIncorrect ? 
+          <>
+            <span>Wprowadzony email lub hasło jest nieprawidłowe, jeżeli nie pamiętasz hasła to </span>
+            <Link to="/resetPassword">zresetuj hasło</Link>
+          </>:""
+        }
       </form>
     </>
   );

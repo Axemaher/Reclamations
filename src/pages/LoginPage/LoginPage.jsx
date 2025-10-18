@@ -6,10 +6,7 @@ function LoginPage({setUserLogged}) {
       <h1>Login page</h1>
       <LoginForm setUserLogged={setUserLogged}/>
     </>
-  ) 
-  
-  
-  
+  )
 }
 
 export default LoginPage

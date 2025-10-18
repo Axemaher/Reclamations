@@ -6,42 +6,30 @@ import Layout from "../components/Layout/Layout";
 import HomePage from "../pages/HomePage/HomePage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
+import ResetPage from "../pages/ResetPage/ResetPage";
 import DashboardPage from "../pages/DashboardPage/DashboardPage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-const auth = getAuth();
-
-
-
-// onAuthStateChanged(auth, (user) => {
-//   if (user) {
-//     // User is signed in, see docs for a list of available properties
-//     // https://firebase.google.com/docs/reference/js/auth.user
-//     const uid = user.uid;
-//     // ...
-//   } else {
-//     // User is signed out
-//     // ...
-//   }
-// });
 
 
 function App() {
+
+  const auth = getAuth();
+  
   const [userLogged, setUserLogged] = useState(null);
 
 
- useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    console.log(user)
-    if (user) {
-      setUserLogged(true);
-    } else {
-      setUserLogged(false);
-    }
-  });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserLogged(true);
+      } else {
+        setUserLogged(false);
+      }
+    });
 
-  return () => unsubscribe();
-}, []);
+    return () => unsubscribe();
+  }, );
 
   return (
     <Layout>
@@ -50,12 +38,14 @@ function App() {
         <Link to="/"> Home </Link>|
         <Link to="/login"> Login </Link>|
         <Link to="/register"> Register </Link>|
+        <Link to="/resetPassword"> Reset password </Link>|
         <Link to="/dashboard"> Dashboard </Link>
       </nav>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage setUserLogged={setUserLogged}/>} />
         <Route path="/register" element={<RegisterPage setUserLogged={setUserLogged}/>} />
+        <Route path="/resetPassword" element={<ResetPage/>} />
         <Route
           path="/dashboard"
           element={
