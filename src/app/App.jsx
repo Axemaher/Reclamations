@@ -8,6 +8,7 @@ import LoginPage from "../pages/LoginPage/LoginPage";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import ResetPage from "../pages/ResetPage/ResetPage";
 import DashboardPage from "../pages/DashboardPage/DashboardPage";
+import AddReclamationPage from "../pages/AddReclamationPage/AddReclamationPage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
@@ -39,6 +40,7 @@ function App() {
         <Link to="/login"> Login </Link>|
         <Link to="/register"> Register </Link>|
         <Link to="/resetPassword"> Reset password </Link>|
+        <Link to="/addReclamation"> Add </Link>|
         <Link to="/dashboard"> Dashboard </Link>
       </nav>
       <Routes>
@@ -51,6 +53,14 @@ function App() {
           element={
             <ProtectedRoute userLogged={userLogged}>
               <DashboardPage setUserLogged={setUserLogged}/>
+            </ProtectedRoute>
+          }
+        />
+                <Route
+          path="/addReclamation"
+          element={
+            <ProtectedRoute userLogged={userLogged}>
+              <AddReclamationPage setUserLogged={setUserLogged}/>
             </ProtectedRoute>
           }
         />
