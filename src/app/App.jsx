@@ -18,12 +18,14 @@ function App() {
   const auth = getAuth();
   
   const [userLogged, setUserLogged] = useState(null);
+  const [uid, setUid] = useState(null)
 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserLogged(true);
+        setUid(user.uid);
       } else {
         setUserLogged(false);
       }
@@ -52,7 +54,7 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute userLogged={userLogged}>
-              <DashboardPage setUserLogged={setUserLogged}/>
+              <DashboardPage setUserLogged={setUserLogged} uid={uid}/>
             </ProtectedRoute>
           }
         />
@@ -60,7 +62,7 @@ function App() {
           path="/addReclamation"
           element={
             <ProtectedRoute userLogged={userLogged}>
-              <AddReclamationPage setUserLogged={setUserLogged}/>
+              <AddReclamationPage userLogged={userLogged} uid={uid}/>
             </ProtectedRoute>
           }
         />
