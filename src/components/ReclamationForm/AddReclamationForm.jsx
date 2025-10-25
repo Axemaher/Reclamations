@@ -13,7 +13,8 @@ function AddReclamationForm() {
 const storage = getStorage();
 const auth = getAuth();
 
-const [uid, setUid] = useState(null)
+const [uid, setUid] = useState(null);
+const [attachment, setAttachment] = useState(null)
 const [state, dispatch] = useReducer(addReducer, initialState);
 
 useEffect(() => {
@@ -29,10 +30,14 @@ useEffect(() => {
 
 
 const handleOnChange = (e) => {
-    // const { value, type, name, files } = e.target;
-    // const payload = type === 'file' ? files[0] : value;
-    // dispatch({ type: 'SET_FIELD', payload, fieldName: name });
-    dispatch({ type: 'SET_FIELD', payload: e.target.value, fieldName: e.target.name,  });
+    const { value, type, name, files } = e.target;
+
+    if(type === 'file') {
+        setAttachment(files[0]);
+        dispatch({ type: 'SET_FIELD', payload: files[0].name, fieldName: name });
+    } else {
+        dispatch({ type: 'SET_FIELD', payload: value, fieldName: name,  });
+    }
 };
 
 
@@ -56,12 +61,15 @@ const validateAllFields = (fields) => {
 }
 
 
-// i can not setup cors...
-const handleUpload = async (file) => {
-    const storageRef = ref(storage, `pdfs/${file.name}`)
-    await uploadBytes(storageRef, file)
-    const url = await getDownloadURL(storageRef)
-    console.log("url: ", url)
+const uploadAttachment = async (file, id) => {
+    if(file) {
+        const storageRef = ref(storage, `users/${uid}/reclamations/${id}/${file.name}`)
+        await uploadBytes(storageRef, file)
+        const url = await getDownloadURL(storageRef)
+        console.log("url: ", url)
+    } else {
+        console.log('no attachments')
+    }
 }
 
 const handleAddReclamation = async (e) => {
@@ -69,11 +77,12 @@ const handleAddReclamation = async (e) => {
 
     const validationStatus = validateAllFields(state.fields) 
     if(validationStatus) {
-        // handleUpload(state.fields.attachment)
         try {
-            await addDoc(collection(db, "users", uid, "reclamations"), state.fields);
-            console.log("successs");
+            const reclamationRef = await addDoc(collection(db, "users", uid, "reclamations"), state.fields);
+            const reclamationId = reclamationRef.id
+            uploadAttachment(attachment, reclamationId)
             dispatch({ type: 'RESET_FIELDS' });
+            console.log('reclamation added')
             } catch (error) {
             console.error(error);
             }

@@ -99,7 +99,7 @@ function RegisterForm({ setUserLogged }) {
         //   status: "pending"
         // });
 
-        console.log("all done")
+        console.log("register success")
         navigate(`/dashboard/`, { replace: true });
       })
       .catch((error) => {

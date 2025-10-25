@@ -94,7 +94,6 @@ const addReducer = (state, action) => {
     const {payload, fieldName, newErrors} = action
     switch (action.type) {
         case 'SET_FIELD':
-            console.log(payload)
             return { ...state, 
                     fields: {
                         ...state.fields, 
