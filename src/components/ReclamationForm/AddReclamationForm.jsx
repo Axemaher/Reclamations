@@ -1,27 +1,38 @@
-import { useReducer } from "react";
+import { useReducer, useEffect, useState } from "react";
 import AddOrderForm from "./AddOrderForm";
 import ClientForm from "./ClientForm";
 import ProductForm from "./ProductForm";
 import addReducer, {initialState, validators} from "./AddReducer";
 import { addDoc, collection } from "firebase/firestore"; 
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { uploadBytes, getDownloadURL, ref, getStorage } from "firebase/storage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db } from "../../app/firebaseConfig";
 
-function AddReclamationForm({userLogged, uid}) {
+function AddReclamationForm() {
 
 const storage = getStorage();
+const auth = getAuth();
 
+const [uid, setUid] = useState(null)
 const [state, dispatch] = useReducer(addReducer, initialState);
+
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUid(user.uid);
+    } else {
+      setUid(null);
+    }
+  });
+  return () => unsubscribe();
+}, [auth]);
 
 
 const handleOnChange = (e) => {
-    const {value, type, name, files} = e.target;
-    console.log(e.target.type)
-    if(type === 'file') {
-        dispatch({ type: 'SET_FIELD', payload: files[0], fieldName: name,  });
-    } else {
-        dispatch({ type: 'SET_FIELD', payload: value, fieldName: name,  });
-    }
+    // const { value, type, name, files } = e.target;
+    // const payload = type === 'file' ? files[0] : value;
+    // dispatch({ type: 'SET_FIELD', payload, fieldName: name });
+    dispatch({ type: 'SET_FIELD', payload: e.target.value, fieldName: e.target.name,  });
 };
 
 
@@ -44,57 +55,30 @@ const validateAllFields = (fields) => {
     if(anyErrorsNow) { return false } else return true
 }
 
-async function uploadFile(uid, file) {
-//     console.log(file)
-//   if (!uid || !file) {
-//     console.error("no file!");
-//     return;
-//   }
-    console.log(file)
-  const storageRef = ref(storage, `${uid}/${file.name}`);
 
-  try {
-    const snapshot = await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    console.log("sended, URL:", downloadURL);
-    return downloadURL;
-  } catch (error) {
-    console.error(error);
-  }
+// i can not setup cors...
+const handleUpload = async (file) => {
+    const storageRef = ref(storage, `pdfs/${file.name}`)
+    await uploadBytes(storageRef, file)
+    const url = await getDownloadURL(storageRef)
+    console.log("url: ", url)
 }
 
-
-const handleAddReclamation = (e) => {
+const handleAddReclamation = async (e) => {
     e.preventDefault();
 
     const validationStatus = validateAllFields(state.fields) 
     if(validationStatus) {
-        // console.log("success, no errors")
-
-
-        // //FILE attachment
-        // // Create a reference to 'mountains.jpg'
-        // const attachmentRef = ref(storage, 'attachment.pdf');
-
-        // // Create a reference to 'images/mountains.jpg'
-        // const attachmentImagesRef = ref(storage, 'images/attachment.pdf');
-
-        // // While the file names are the same, the references point to different files
-        // attachmentRef.name === attachmentImagesRef.name;           // true
-        // attachmentRef.fullPath === attachmentImagesRef.fullPath;   // false 
-
-        // console.log(attachmentRef.name)
-
-        const file = state.fields.attachment;
-        // console.log(file)
-
-        uploadFile(uid, file)
-
-        // addDoc(collection(db, "users", uid, "reclamations"), state);
-
-        // dispatch({ type: 'RESET_FIELDS'});
+        // handleUpload(state.fields.attachment)
+        try {
+            await addDoc(collection(db, "users", uid, "reclamations"), state.fields);
+            console.log("successs");
+            dispatch({ type: 'RESET_FIELDS' });
+            } catch (error) {
+            console.error(error);
+            }
     } else {
-        console.log("errors! form not send")
+        console.log("errors in inputs, form not sended")
     }
 };
 
