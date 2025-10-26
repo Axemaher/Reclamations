@@ -1,4 +1,4 @@
-function AddOrderForm({handleOnChange, handleOnBlur, state}) {
+function OrderForm({handleOnChange, handleOnBlur, state}) {
   const {fields, errors} = state;
   return <>
     <fieldset>
@@ -119,7 +119,7 @@ function AddOrderForm({handleOnChange, handleOnBlur, state}) {
   </>
 }
 
-export default AddOrderForm;
+export default OrderForm;
 
 
 

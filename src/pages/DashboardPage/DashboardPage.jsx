@@ -1,15 +1,15 @@
 import { getAuth, signOut } from "firebase/auth";
 import ReclamationsList from "../../components/ReclamationList/ReclamationList";
 
-function DashboardPage({setUserLogged}) {
+function DashboardPage() {
   
   const auth = getAuth();
 
   const handleLogout = async() => {
     signOut(auth).then(() => {
-     setUserLogged(false)
+      console.log("logged out");
     }).catch((error) => {
-      console.log(error)
+      console.log(error);
     });
   }
 

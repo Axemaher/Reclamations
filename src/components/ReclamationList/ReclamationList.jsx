@@ -1,44 +1,34 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { collection, query, getDocs } from "firebase/firestore";
 import './ReclamationList.scss';
 import { db } from "../../app/firebaseConfig";
+import { AuthContext } from "../../app/AuthProvider";
 
 function ReclamationsList() {
 
-const auth = getAuth();
+const { uid } = useContext(AuthContext);
 const navigate = useNavigate();
 
-const [uid, setUid] = useState(null);
 const [data, setData] = useState(null)
 
 
 useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    if (user) {
-        setUid(user.uid);
-        // get list
-        getData(user.uid)
+    if(!uid) {
+        setData(null);
     } else {
-      setUid(null);
+    const getData = async () => {
+        const data = [];
+        const q = query(collection(db, "users", uid, "reclamations"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            data.push({ id: doc.id, ...doc.data() });
+        });
+        setData(data);
+    };
+    getData();
     }
-  });
-  return () => unsubscribe();
-}, [auth]);
-
-
-const getData = async (uid) => {
-    const data = [];
-    const q = query(collection(db, "users", uid, "reclamations"));
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-        data.push({id: doc.id, ... doc.data()})
-    });
-    setData(data)
-    console.log(data)
-}
+}, [uid]);
 
 const handleEdit = (e) => {
     

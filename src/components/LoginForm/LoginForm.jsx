@@ -3,7 +3,7 @@ import { getAuth, setPersistence, signInWithEmailAndPassword, browserLocalPersis
 import { useState } from "react";
 
 
-function LoginForm({ setUserLogged }) {
+function LoginForm() {
 
   const auth = getAuth();
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ function LoginForm({ setUserLogged }) {
             return signInWithEmailAndPassword(auth, loginData.email, loginData.password)
                   .then(() => {
                     // Signed in 
-                    setUserLogged(true);
+                    console.log("logged")
                     navigate(`/dashboard/`, { replace: true });
                   })
                   .catch((error) => {
@@ -78,7 +78,6 @@ function LoginForm({ setUserLogged }) {
                   });
           })
           .catch((error) => {
-            // Handle Errors here.
             console.log(error.code)
           });
         }

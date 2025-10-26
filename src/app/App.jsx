@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useContext } from "react";
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import '../App.scss';
 import ProtectedRoute from "./ProtectedRoute";
@@ -10,75 +10,56 @@ import ResetPage from "../pages/ResetPage/ResetPage";
 import DashboardPage from "../pages/DashboardPage/DashboardPage";
 import AddReclamationPage from "../pages/AddReclamationPage/AddReclamationPage";
 import EditReclamationPage from "../pages/EditReclamationPage/EditReclamationPage";
-
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { AuthContext } from "./AuthProvider";
 
 
 
 function App() {
 
-  const auth = getAuth();
-  
-  const [userLogged, setUserLogged] = useState(null);
-  const [uid, setUid] = useState(null)
-
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserLogged(true);
-        setUid(user.uid);
-        console.log(user.uid)
-      } else {
-        setUserLogged(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, );
+  const { userLogged } = useContext(AuthContext);
 
   return (
     <Layout>
-    <BrowserRouter>
-      <nav>
-        <Link to="/"> Home </Link>|
-        <Link to="/login"> Login </Link>|
-        <Link to="/register"> Register </Link>|
-        <Link to="/resetPassword"> Reset password </Link>|
-        <Link to="/addReclamation"> Add </Link>|
-        <Link to="/dashboard"> Dashboard </Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage setUserLogged={setUserLogged}/>} />
-        <Route path="/register" element={<RegisterPage setUserLogged={setUserLogged}/>} />
-        <Route path="/resetPassword" element={<ResetPage/>} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute userLogged={userLogged}>
-              <DashboardPage setUserLogged={setUserLogged} uid={uid}/>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/addReclamation"
-          element={
-            <ProtectedRoute userLogged={userLogged}>
-              <AddReclamationPage userLogged={userLogged} uid={uid}/>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/edit/:id"
-          element={
-            <ProtectedRoute userLogged={userLogged}>
-              <EditReclamationPage userLogged={userLogged} uid={uid}/>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <nav>
+          <Link to="/"> Home </Link>|
+          <Link to="/login"> Login </Link>|
+          <Link to="/register"> Register </Link>|
+          <Link to="/resetPassword"> Reset password </Link>|
+          <Link to="/addReclamation"> Add </Link>|
+          <Link to="/dashboard"> Dashboard </Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage/>} />
+          <Route path="/register" element={<RegisterPage/>} />
+          <Route path="/resetPassword" element={<ResetPage/>} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute userLogged={userLogged}>
+                <DashboardPage/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/addReclamation"
+            element={
+              <ProtectedRoute userLogged={userLogged}>
+                <AddReclamationPage/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit/:id"
+            element={
+              <ProtectedRoute userLogged={userLogged}>
+                <EditReclamationPage/>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </Layout>
   )
 }

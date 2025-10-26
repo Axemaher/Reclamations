@@ -1,32 +1,20 @@
-import { useReducer, useEffect, useState } from "react";
-import AddOrderForm from "./AddOrderForm";
+import { useReducer, useState, useContext } from "react";
+import OrderForm from "./OrderForm";
 import ClientForm from "./ClientForm";
 import ProductForm from "./ProductForm";
-import addReducer, {initialState, validators} from "./AddReducer";
+import reclamationReducer, {initialState, validators} from "./ReclamationReducer";
 import { addDoc, collection } from "firebase/firestore"; 
 import { uploadBytes, getDownloadURL, ref, getStorage } from "firebase/storage";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db } from "../../app/firebaseConfig";
+import { AuthContext } from "../../app/AuthProvider";
 
-function AddReclamationForm() {
+function ReclamationForm() {
 
+const { uid } = useContext(AuthContext);
 const storage = getStorage();
-const auth = getAuth();
 
-const [uid, setUid] = useState(null);
 const [attachment, setAttachment] = useState(null)
-const [state, dispatch] = useReducer(addReducer, initialState);
-
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setUid(user.uid);
-    } else {
-      setUid(null);
-    }
-  });
-  return () => unsubscribe();
-}, [auth]);
+const [state, dispatch] = useReducer(reclamationReducer, initialState);
 
 
 const handleOnChange = (e) => {
@@ -98,7 +86,7 @@ const handleResetForm = () => {
 return (
     <>
         <form onSubmit={handleAddReclamation}>
-            <AddOrderForm 
+            <OrderForm 
                 handleOnChange={handleOnChange}
                 handleOnBlur={handleOnBlur}
                 state={state}
@@ -121,4 +109,4 @@ return (
     );
 }
 
-export default AddReclamationForm;
+export default ReclamationForm;

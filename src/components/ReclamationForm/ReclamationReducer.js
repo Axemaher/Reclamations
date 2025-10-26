@@ -90,7 +90,7 @@ const validateField = (name, value, fields) => {
     return !isValid
 }
 
-const addReducer = (state, action) => {
+const reclamationReducer = (state, action) => {
     const {payload, fieldName, newErrors} = action
     switch (action.type) {
         case 'SET_FIELD':
@@ -121,5 +121,5 @@ const addReducer = (state, action) => {
     }
 };
 
-export default addReducer
+export default reclamationReducer;
 export {initialState, validators}

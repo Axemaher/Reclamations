@@ -4,7 +4,7 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, } from "firebase/firestore"; 
 import { db } from "../../app/firebaseConfig";
 
-function RegisterForm({ setUserLogged }) {
+function RegisterForm() {
 
   const navigate = useNavigate();
   const auth = getAuth();
@@ -86,18 +86,11 @@ function RegisterForm({ setUserLogged }) {
       .then(async(userCredential) => {
         // signed up 
         const {uid} = userCredential.user;
-        setUserLogged(true);
 
         await setDoc(doc(db, "users", uid, "profile", "main"), {
           firstName: registerData.firstName,
           lastName: registerData.lastName,
         });
-        // await addDoc(collection(db, "users", uid, "reclamations"), {
-        //   title: "Reklamacja numer 123",
-        //   description: "Opis problemu...",
-        //   date: new Date(),
-        //   status: "pending"
-        // });
 
         console.log("register success")
         navigate(`/dashboard/`, { replace: true });
