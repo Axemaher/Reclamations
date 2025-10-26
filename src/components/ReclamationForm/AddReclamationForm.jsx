@@ -56,19 +56,19 @@ const validateAllFields = (fields) => {
     });
     dispatch({ type: 'VALIDATE_ALL_FIELDS', newErrors});
 
-    const anyErrorsNow = Object.values(newErrors).some(e => e === true)
-    if(anyErrorsNow) { return false } else return true
+    const anyErrorsNow = Object.values(newErrors).some(e => e === true);
+    if(anyErrorsNow) { return false } else return true;
 }
 
 
 const uploadAttachment = async (file, id) => {
     if(file) {
-        const storageRef = ref(storage, `users/${uid}/reclamations/${id}/${file.name}`)
-        await uploadBytes(storageRef, file)
-        const url = await getDownloadURL(storageRef)
-        console.log("url: ", url)
+        const storageRef = ref(storage, `users/${uid}/reclamations/${id}/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        console.log("url: ", url);
     } else {
-        console.log('no attachments')
+        console.log('no attachments');
     }
 }
 
@@ -79,10 +79,10 @@ const handleAddReclamation = async (e) => {
     if(validationStatus) {
         try {
             const reclamationRef = await addDoc(collection(db, "users", uid, "reclamations"), state.fields);
-            const reclamationId = reclamationRef.id
-            uploadAttachment(attachment, reclamationId)
+            const reclamationId = reclamationRef.id;
+            uploadAttachment(attachment, reclamationId);
             dispatch({ type: 'RESET_FIELDS' });
-            console.log('reclamation added')
+            console.log('reclamation added');
             } catch (error) {
             console.error(error);
             }

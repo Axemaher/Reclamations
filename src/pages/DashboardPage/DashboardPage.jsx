@@ -1,4 +1,5 @@
 import { getAuth, signOut } from "firebase/auth";
+import ReclamationsList from "../../components/ReclamationList/ReclamationList";
 
 function DashboardPage({setUserLogged}) {
   
@@ -15,6 +16,7 @@ function DashboardPage({setUserLogged}) {
   return (
     <>
       <h1>Dashboard page</h1>
+      <ReclamationsList />
       <button onClick={handleLogout}>Logout</button>
     </>
   );

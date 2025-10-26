@@ -9,6 +9,8 @@ import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import ResetPage from "../pages/ResetPage/ResetPage";
 import DashboardPage from "../pages/DashboardPage/DashboardPage";
 import AddReclamationPage from "../pages/AddReclamationPage/AddReclamationPage";
+import EditReclamationPage from "../pages/EditReclamationPage/EditReclamationPage";
+
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
@@ -26,6 +28,7 @@ function App() {
       if (user) {
         setUserLogged(true);
         setUid(user.uid);
+        console.log(user.uid)
       } else {
         setUserLogged(false);
       }
@@ -58,11 +61,19 @@ function App() {
             </ProtectedRoute>
           }
         />
-                <Route
+        <Route
           path="/addReclamation"
           element={
             <ProtectedRoute userLogged={userLogged}>
               <AddReclamationPage userLogged={userLogged} uid={uid}/>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit/:id"
+          element={
+            <ProtectedRoute userLogged={userLogged}>
+              <EditReclamationPage userLogged={userLogged} uid={uid}/>
             </ProtectedRoute>
           }
         />
