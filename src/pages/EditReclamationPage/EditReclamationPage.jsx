@@ -1,11 +1,11 @@
-import EditReclamationForm from "../../components/EditReclamationForm/EditReclamationForm";
+import ReclamationForm from "../../components/ReclamationForm/ReclamationForm";
 
-function EditReclamationPage({setUserLogged}) {
+function EditReclamationPage() {
 
   return (
     <>
       <h1>Edit reclamation page</h1>
-      <EditReclamationForm />
+      <ReclamationForm mode={'edit'}/>
     </>
   );
 }

@@ -11,23 +11,33 @@ const { uid } = useContext(AuthContext);
 const navigate = useNavigate();
 
 const [data, setData] = useState(null)
-
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
 
 useEffect(() => {
-    if(!uid) {
-        setData(null);
-    } else {
-    const getData = async () => {
-        const data = [];
-        const q = query(collection(db, "users", uid, "reclamations"));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-        });
-        setData(data);
-    };
-    getData();
+  if (!uid) {
+    setData([]);
+    setLoading(false);
+    return;
+  }
+
+  const getData = async () => {
+    try {
+      const data = [];
+      const q = query(collection(db, "users", uid, "reclamations"));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
+      console.log(data)
+      setData(data);
+    } catch (error) {
+        console.log(error)
+      setError(error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  getData();
 }, [uid]);
 
 const handleEdit = (e) => {
@@ -35,12 +45,16 @@ const handleEdit = (e) => {
     navigate(`/edit/${e.target.value}`, { replace: true });
 }
 
-return (
+if (loading) return <p>Ładowanie</p>
+if (error) return <p>Błąd wczytywania, spróbuj ponownie</p>
+if (Array.isArray(data) && data.length === 0) return <p>Brak danych, dodaj pierwszą reklamację</p>
+if (data.length >=1) return (
     <>
-    {data ? 
         <table>
         <thead>
             <tr>
+            <th scope="col"></th>
+            <th scope="col">Pozostałe dni</th>
             <th scope="col">Data dodania</th>
             <th scope="col">Termin wykonania</th>
             <th scope="col">Metoda dostarczenia</th>
@@ -68,6 +82,7 @@ return (
                 {data.map((el) => (
                     <tr key={el.id}>
                         <td><button value={el.id} onClick={handleEdit} >Edytuj</button></td>
+                        <td>{Math.abs((Date.parse(el.submissionDate) - Date.parse(el.deadlineDate)) / (1000 * 60 * 60 * 24))}</td>
                         <td>{el.submissionDate}</td>
                         <td>{el.deadlineDate}</td>
                         <td>{el.deliveryMethod}</td>
@@ -83,7 +98,7 @@ return (
                         <td>{el.city}</td>
                         <td>{el.email}</td>
                         <td>{el.phonePrefix} {el.phoneNumber}</td>
-                        <td>{el.note}</td>
+                        <td>{el.clientNote}</td>
                         <td>{el.manufacturer}</td>
                         <td>{el.shortName}</td>
                         <td>{el.fullName}</td>
@@ -99,9 +114,7 @@ return (
             </tr>
         </tfoot> */}
         </table>
-        : "loading data"}
-    </>
-    );
+    </>)
 }
 
 export default ReclamationsList;

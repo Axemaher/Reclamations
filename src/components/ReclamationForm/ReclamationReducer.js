@@ -4,26 +4,27 @@ const initialState = {
         submissionDate: new Date().toISOString().slice(0, 10),
         deadlineDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
         deliveryMethod: 'email',
-        type: 'postWarranty',
+        type: 'po gwarancyjna',
         dateOfSale: new Date().toISOString().slice(0, 10),
-        salesDocNumber: '112/STO/2023',
-        orderDescription: 'nie działa',
+        salesDocNumber: '',
+        orderDescription: '',
         attachment: '',
+        attachmentUrl: '',
         // client
-        clientName: 'Marcin Boczkowski',
-        nip: '822-237-41-59',
-        address: 'Topolowa 3',
-        postalCode: '05-300',
-        city: 'Mińsk Mazowiecki',
-        email: 'mb2@fdfs.pl',
+        clientName: '',
+        nip: '',
+        address: '',
+        postalCode: '',
+        city: '',
+        email: '',
         phonePrefix: "+48",
-        phoneNumber: '665 213 441',
-        note: 'nerwowy od początku',
+        phoneNumber: '',
+        clientNote: '',
         // product
-        manufacturer: 'Beta',
-        shortName: '1750/500',
-        fullName: 'Smarownica',
-        catalogNumber: '20/857',
+        manufacturer: '',
+        shortName: '',
+        fullName: '',
+        catalogNumber: '',
         additionalDescription: ''
     },
     errors: {
@@ -35,6 +36,7 @@ const initialState = {
         salesDocNumber: false,
         orderDescription: false,
         attachment: false,
+        attachmentUrl: false,
         clientName: false,
         nip: false,
         address: false,
@@ -43,7 +45,7 @@ const initialState = {
         email: false,
         phonePrefix: false,
         phoneNumber: false,
-        note: false,
+        clientNote: false,
         manufacturer: false,
         shortName: false,
         fullName: false,
@@ -75,7 +77,7 @@ const validators = {
         email: v => emailPattern.test(v),
         phonePrefix: v => phonePrefixPattern.test(v),
         phoneNumber: v => phoneNumberPattern.test(v),
-        // note: v => v,
+        // clientNote: v => v,
     // product
         manufacturer: v => v.length >= 3,
         shortName: v => v.length >= 3,
@@ -85,7 +87,7 @@ const validators = {
     };
 
 const validateField = (name, value, fields) => {
-    if (!validators[name]) return;
+    if (!validators[name]) return false;
     const isValid = validators[name](value, fields)
     return !isValid
 }
@@ -100,6 +102,10 @@ const reclamationReducer = (state, action) => {
                         [fieldName]: payload
                     } 
                 };
+        case 'SET_ALL_FIELDS':
+            return { ...state, 
+                    fields: payload
+                };
         case 'VALIDATE_FIELD':
             return { ...state, 
                     errors: {
@@ -112,10 +118,11 @@ const reclamationReducer = (state, action) => {
                     errors: newErrors
                 };
         case 'RESET_FIELDS':
-            return { ...state, 
-                    fields: initialState.fields,
-                    errors: initialState.errors
-                };
+        return { 
+            ...state, 
+            fields: { ...initialState.fields },
+            errors: { ...initialState.errors }
+        };
         default:
             return state;
     }

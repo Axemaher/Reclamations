@@ -1,4 +1,4 @@
-function OrderForm({handleOnChange, handleOnBlur, state}) {
+function OrderForm({handleOnChange, handleOnBlur, state, modeEdit}) {
   const {fields, errors} = state;
   return <>
     <fieldset>
@@ -40,9 +40,9 @@ function OrderForm({handleOnChange, handleOnBlur, state}) {
                   id="deliveryMethod"
                   // required
                   >
-            <option value="person">osobiście</option>
-            <option value="email">e-mail</option>
-            <option value="send">przysłano</option>
+            <option value="osobiście">osobiście</option>
+            <option value="e-mail">e-mail</option>
+            <option value="przysłano">przysłano</option>
           </select>
           <span>{errors.deliveryMethod ? `Wybierz metodę dostarczenia` : ""}</span>
         </p>
@@ -56,8 +56,8 @@ function OrderForm({handleOnChange, handleOnBlur, state}) {
                   id="type"
                   // required
                   >
-            <option value="warranty">gwarancyjne</option>
-            <option value="postWarranty">pogwarancyjne</option>
+            <option value="gwarancyjne">gwarancyjne</option>
+            <option value="pogwarancyjne">pogwarancyjne</option>
           </select>
           <span>{errors.type ? `Wybierz typ zlecenia` : ""}</span>
         </p>
@@ -114,6 +114,11 @@ function OrderForm({handleOnChange, handleOnBlur, state}) {
                 // required
                 />
           <span>{errors.attachment ? `Coś poszło nie tak, spróbuj ponownie` : ""}</span>
+          {modeEdit && fields.attachmentUrl && (
+            <a href={fields.attachmentUrl} download>
+              Pobierz {fields.attachment}
+            </a>
+          )}
         </p>
 </fieldset>
   </>

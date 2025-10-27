@@ -112,17 +112,16 @@ function ClientForm({handleOnChange, handleOnBlur, state}) {
         </p>
 
         <p>
-            <label htmlFor="note">Notatka</label>
+            <label htmlFor="clientNote">Notatka</label>
             <textarea
             onChange={handleOnChange}
             onBlur={handleOnBlur}
-            name="note"
-            value={fields.note}
-            id="note"
+            name="clientNote"
+            value={fields.clientNote}
+            id="clientNote"
             rows="4"
             cols="33"
             />
-            <span>{errors.note ? `Wpisz notatkę (opcjonalnie)` : ""}</span>
         </p>
 </fieldset>
   </>

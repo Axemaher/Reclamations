@@ -69,7 +69,6 @@ function ProductForm({handleOnChange, handleOnBlur, state}) {
             rows="4"
             cols="33"
             />
-            <span>{errors.additionalDescription ? `Podaj dodatkowe informacje` : ""}</span>
         </p>
     </fieldset>
   </>

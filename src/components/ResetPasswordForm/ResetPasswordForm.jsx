@@ -44,22 +44,24 @@ function ResetPasswordForm() {
   return (
     <>
       <form onSubmit={handleReset}>
-        <legend>Resetowanie hasła</legend>
-        <p>
-          <label htmlFor="email">Email</label>
-          <input
-                type="email"
-                onChange={handleOnChange}
-                onBlur={handleOnBlur}
-                name="email"
-                value={email}
-                id="email"
-                // required
-                />
-          <span>{emailInputError ? `Wpisz poprawny adres mailowy` : ""}</span>
-        </p>
-        <button type="submit">Wyślij prośbę o zresetowanie hasła</button>
-        <span>{emailSend ? "Mail dot. resetu hasła został wysłany jeżeli podany email istnieje w naszej bazie" : ""}</span>
+        <fieldset>
+          <legend>Resetowanie hasła</legend>
+          <p>
+            <label htmlFor="email">Email</label>
+            <input
+                  type="email"
+                  onChange={handleOnChange}
+                  onBlur={handleOnBlur}
+                  name="email"
+                  value={email}
+                  id="email"
+                  // required
+                  />
+            <span>{emailInputError ? `Wpisz poprawny adres mailowy` : ""}</span>
+          </p>
+          <button type="submit" disabled={emailSend}>Wyślij prośbę o zresetowanie hasła</button>
+          <span>{emailSend ? "Mail dot. resetu hasła został wysłany jeżeli podany email istnieje w naszej bazie" : ""}</span>
+        </fieldset>
       </form>
     </>
   );

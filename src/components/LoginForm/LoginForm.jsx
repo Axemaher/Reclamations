@@ -13,23 +13,23 @@ function LoginForm() {
       email: 'mb2@gm.pl',
       password: '123456'
     });
-  
-    const handleOnChange = (e) => {
-      setLoginData((prevState) => ({
-        ...prevState,
-        [e.target.name]: e.target.value,
-      }));
-    };
-
-    const [inputErrors, setInputErrors] = useState({
+  const [inputErrors, setInputErrors] = useState({
       emailError: null,
       passwordError: null,
     });
+
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const validators = {
       email: v => emailPattern.test(v),
       password: v => v.length >= 6,
+    };
+
+    const handleOnChange = (e) => {
+      setLoginData((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }));
     };
 
     const validateField = (name, value) => {
@@ -58,29 +58,18 @@ function LoginForm() {
       if(anyErrorsNow) { return false } else return true
     }
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        
-        if(validationCorrectCheck()){
-           setPersistence(auth, browserLocalPersistence	)
-          .then(() => {
-            return signInWithEmailAndPassword(auth, loginData.email, loginData.password)
-                  .then(() => {
-                    // Signed in 
-                    console.log("logged")
-                    navigate(`/dashboard/`, { replace: true });
-                  })
-                  .catch((error) => {
-                    console.log(error.code)
-                    if(error.code === "auth/invalid-credential") {
-                      setDataIncorrect(true)
-                    }
-                  });
-          })
-          .catch((error) => {
-            console.log(error.code)
-          });
-        }
+    const handleLogin = async (e) => {
+      e.preventDefault();
+      if (!validationCorrectCheck()) return;
+
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+        await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
+        navigate("/dashboard", { replace: true });
+      } catch (error) {
+        console.log(error.code);
+        if (error.code === "auth/invalid-credential") setDataIncorrect(true);
+      }
       };
 
     const {emailError, passwordError} = inputErrors;
