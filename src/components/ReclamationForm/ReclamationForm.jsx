@@ -1,11 +1,12 @@
 import { useReducer, useState, useContext, useEffect } from "react";
-import { useParams } from "react-router";import { doc, getDoc } from "firebase/firestore";
+import { useParams } from "react-router";
+import { doc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
 import OrderForm from "./OrderForm";
 import ClientForm from "./ClientForm";
 import ProductForm from "./ProductForm";
+import ActivityHistory from "../ActivityHistory/ActivityHistory";
 import reclamationReducer, {initialState, validators} from "./ReclamationReducer";
-import { addDoc, updateDoc, collection } from "firebase/firestore"; 
 import { uploadBytes, getDownloadURL, ref, getStorage } from "firebase/storage";
 import { db } from "../../app/firebaseConfig";
 import { AuthContext } from "../../app/AuthProvider";
@@ -18,32 +19,38 @@ const storage = getStorage();
 const navigate = useNavigate();
 const modeEdit = mode === 'edit' ? true : false;
 
+const [noDataError, setNoDataError] = useState(null);
+const [loading, setLoading] = useState(modeEdit ? true : false)
+const [attachment, setAttachment] = useState(null);
+const [state, dispatch] = useReducer(reclamationReducer, initialState);
+
 
 useEffect(() => {
     if(modeEdit) {
-        if(!uid) {
-            console.log('not logined')
-            return
-        } else {
+        if(!uid) { return } 
+        else {
         const getData = async () => {
             const docRef = doc(db, "users", uid, 'reclamations', id);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-            dispatch({ type: 'SET_ALL_FIELDS', payload: docSnap.data(),  });
-            console.log(docSnap.data())
+                dispatch({ type: 'SET_ALL_FIELDS', payload: docSnap.data()});
+                if(modeEdit) {
+                    setNoDataError(false);
+                    setLoading(false)
+                }
             } else {
-            console.log("No such document!");
+                console.log("No such document!");
+                if(modeEdit) {
+                    setNoDataError(true);
+                    setLoading(true)
+                }
             }
         };
         getData();
         }
     }
-    
+
   },[uid, id, modeEdit] );
-
-
-const [attachment, setAttachment] = useState(null)
-const [state, dispatch] = useReducer(reclamationReducer, initialState);
 
 
 const handleOnChange = (e) => {
@@ -123,8 +130,9 @@ const handleSubmit = async (e) => {
 const handleResetForm = () => {
     dispatch({ type: 'RESET_FIELDS'});
 }
-
-return (
+    if (loading) return <p>ładowanie...</p>
+    if (noDataError && modeEdit) return <p>Dokument o wskazanym id {id} nie znajduje się w bazie.</p>
+    else return (
     <>
         <form onSubmit={handleSubmit}>
             <OrderForm 
@@ -146,7 +154,12 @@ return (
             <button type="submit">{modeEdit ? 'Zapisz zmiany' : 'Dodaj reklamację'}</button>
 
         </form>
-        <button onClick={handleResetForm}>Reset</button>
+        {!modeEdit && <button onClick={handleResetForm}>Reset</button>}
+            {modeEdit &&
+                <ActivityHistory 
+                    dispatch={dispatch}
+                />
+            }
     </>
     );
 }

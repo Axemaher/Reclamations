@@ -4,6 +4,7 @@ import { collection, query, getDocs } from "firebase/firestore";
 import './ReclamationList.scss';
 import { db } from "../../app/firebaseConfig";
 import { AuthContext } from "../../app/AuthProvider";
+import { Link } from "react-router-dom";
 
 function ReclamationsList() {
 
@@ -27,10 +28,8 @@ useEffect(() => {
       const q = query(collection(db, "users", uid, "reclamations"));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
-      console.log(data)
       setData(data);
     } catch (error) {
-        console.log(error)
       setError(error);
     } finally {
       setLoading(false);
@@ -47,7 +46,7 @@ const handleEdit = (e) => {
 
 if (loading) return <p>Ładowanie</p>
 if (error) return <p>Błąd wczytywania, spróbuj ponownie</p>
-if (Array.isArray(data) && data.length === 0) return <p>Brak danych, dodaj pierwszą reklamację</p>
+if (Array.isArray(data) && data.length === 0) return <p>Brak danych <Link to="/addReclamation">Dodaj pierwszą reklamalcję</Link></p>
 if (data.length >=1) return (
     <>
         <table>
@@ -82,7 +81,16 @@ if (data.length >=1) return (
                 {data.map((el) => (
                     <tr key={el.id}>
                         <td><button value={el.id} onClick={handleEdit} >Edytuj</button></td>
-                        <td>{Math.abs((Date.parse(el.submissionDate) - Date.parse(el.deadlineDate)) / (1000 * 60 * 60 * 24))}</td>
+                        <td>{(() => {
+                          const diff = Math.round(
+                            (Date.parse(el.submissionDate) - Date.parse(el.deadlineDate)) / (1000 * 60 * 60 * 24)
+                          );
+                          return diff > 0
+                            ? `+${diff} dni po terminie`
+                            : diff < 0
+                            ? `${Math.abs(diff)} dni`
+                            : 'W terminie';
+                        })()}</td>
                         <td>{el.submissionDate}</td>
                         <td>{el.deadlineDate}</td>
                         <td>{el.deliveryMethod}</td>

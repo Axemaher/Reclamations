@@ -25,7 +25,14 @@ const initialState = {
         shortName: '',
         fullName: '',
         catalogNumber: '',
-        additionalDescription: ''
+        additionalDescription: '',
+        // activity history
+        activityData: [
+            {
+                id: 'initial',
+                addDate: new Date().toISOString().slice(0, 10),
+                activity: 'Reklamacja dodana do systemu'
+            }],
     },
     errors: {
         submissionDate: false,
@@ -61,8 +68,8 @@ const phoneNumberPattern = /^(?:\s?\d){6,12}$/;
 
 const validators = {
     // order
-        submissionDate: (v, fields) => v < fields.deadlineDate,
-        deadlineDate: (v, fields) => v > fields.submissionDate,
+        submissionDate: (v, fields) => v,
+        deadlineDate: (v, fields) => v,
         deliveryMethod: v => v,
         type: v => v,
         dateOfSale: v => v <= new Date().toISOString().slice(0, 10),
@@ -84,6 +91,7 @@ const validators = {
         fullName: v => v.length >= 3,
         catalogNumber: v => v.length >= 1,
         // additionalDescription: v => v
+        activityNote: v => v.length >=3
     };
 
 const validateField = (name, value, fields) => {
@@ -123,10 +131,18 @@ const reclamationReducer = (state, action) => {
             fields: { ...initialState.fields },
             errors: { ...initialState.errors }
         };
+        case 'SET_ACTIVITY_HISTORY':
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    activityData: payload,
+                }
+            };
         default:
             return state;
     }
 };
 
 export default reclamationReducer;
-export {initialState, validators}
+export {initialState, validators, validateField}

@@ -18,7 +18,7 @@ function ProductForm({handleOnChange, handleOnBlur, state}) {
         </p>
 
         <p>
-            <label htmlFor="shortName">Nazwa skrócona</label>
+            <label htmlFor="shortName">Nazwa skrócona / symbol</label>
             <input
             type="text"
             onChange={handleOnChange}
@@ -45,7 +45,7 @@ function ProductForm({handleOnChange, handleOnBlur, state}) {
         </p>
 
         <p>
-            <label htmlFor="catalogNumber">Numer katalogowy</label>
+            <label htmlFor="catalogNumber">Numer katalogowy producenta</label>
             <input
             type="text"
             onChange={handleOnChange}
