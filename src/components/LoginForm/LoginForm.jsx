@@ -1,10 +1,11 @@
 import { useNavigate, Link } from "react-router-dom";
 import { getAuth, setPersistence, signInWithEmailAndPassword, browserLocalPersistence } from "firebase/auth";
-import { useState } from "react";
-
+import { useState, useContext } from "react";
+import { ToastContext } from "../ToastsNotification/ToastNotification";
 
 function LoginForm() {
 
+  const { addToast } = useContext(ToastContext);
   const auth = getAuth();
   const navigate = useNavigate();
 
@@ -67,10 +68,10 @@ function LoginForm() {
         await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
         navigate("/dashboard", { replace: true });
       } catch (error) {
-        console.log(error.code);
         if (error.code === "auth/invalid-credential") setDataIncorrect(true);
+        addToast('Email lub hasło są nieprawidłowe', 'error')
       }
-      };
+    };
 
     const {emailError, passwordError} = inputErrors;
   return (

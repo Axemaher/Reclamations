@@ -1,16 +1,17 @@
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { useState } from "react";
-
+import { useState, useContext } from "react";
+import { ToastContext } from "../ToastsNotification/ToastNotification";
 
 function ResetPasswordForm() {
 
+  const { addToast } = useContext(ToastContext);
   const auth = getAuth();
 
   const [emailSend, setEmailSend] = useState(null)
   const [email, setEmail] = useState('');
   
   const handleOnChange = (e) => {
-    setEmail(e.target.value)
+    setEmail(e.target.value);
   };
 
   const [emailInputError, setEmailInputError] = useState(false);
@@ -36,7 +37,7 @@ function ResetPasswordForm() {
         })
         .catch((error) => {
           console.log(error)
-          // ..
+          addToast('Coś poszło nie tak', 'error')
         });
     }
   };

@@ -1,7 +1,7 @@
 import { useReducer, useState, useContext, useEffect } from "react";
 import { useParams } from "react-router";
 import { doc, getDoc, addDoc, updateDoc, collection } from "firebase/firestore";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import OrderForm from "./OrderForm";
 import ClientForm from "./ClientForm";
 import ProductForm from "./ProductForm";
@@ -10,9 +10,11 @@ import reclamationReducer, {initialState, validators} from "./ReclamationReducer
 import { uploadBytes, getDownloadURL, ref, getStorage } from "firebase/storage";
 import { db } from "../../app/firebaseConfig";
 import { AuthContext } from "../../app/AuthProvider";
+import { ToastContext } from "../ToastsNotification/ToastNotification";
 
 function ReclamationForm({mode}) {
 
+const { addToast } = useContext(ToastContext);
 const { id } = useParams();
 const { uid } = useContext(AuthContext);
 const storage = getStorage();
@@ -116,13 +118,15 @@ const handleSubmit = async (e) => {
                     attachmentUrl
                 });
             }               
-            console.log(modeEdit ? 'reclamation saved' : 'reclamation added')
             navigate(`/dashboard/`, { replace: true });
+            addToast('Pomyślnie zapisano dane', 'success');
             } catch (error) {
                 console.log(error);
             }
     } else {
         console.log("errors in inputs, form not sended")
+        addToast('Formularz zawiera błędy, popraw je i spróbuj ponownie', 'error')
+
     }
 }
 

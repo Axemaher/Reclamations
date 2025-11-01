@@ -48,7 +48,7 @@ if (loading) return <p>Ładowanie</p>
 if (error) return <p>Błąd wczytywania, spróbuj ponownie</p>
 if (Array.isArray(data) && data.length === 0) return <p>Brak danych <Link to="/addReclamation">Dodaj pierwszą reklamalcję</Link></p>
 if (data.length >=1) return (
-    <>
+    <div className="table-wrapper">
         <table>
         <thead>
             <tr>
@@ -122,7 +122,7 @@ if (data.length >=1) return (
             </tr>
         </tfoot> */}
         </table>
-    </>)
+    </div>)
 }
 
 export default ReclamationsList;

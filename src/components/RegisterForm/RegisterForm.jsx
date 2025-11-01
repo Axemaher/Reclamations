@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, } from "firebase/firestore"; 
 import { db } from "../../app/firebaseConfig";
+import { ToastContext } from "../ToastsNotification/ToastNotification";
 
 function RegisterForm() {
 
+  const { addToast } = useContext(ToastContext);
   const navigate = useNavigate();
   const auth = getAuth();
 
@@ -84,7 +86,9 @@ function RegisterForm() {
     if(validationCorrectCheck()){
       createUserWithEmailAndPassword(auth, registerData.email, registerData.password)
       .then(async(userCredential) => {
-        // signed up 
+
+        addToast('Rejestracja przebiegła pomyślnie', 'success');
+        
         const {uid} = userCredential.user;
 
         await setDoc(doc(db, "users", uid, "profile", "main"), {
@@ -92,12 +96,12 @@ function RegisterForm() {
           lastName: registerData.lastName,
         });
 
-        console.log("register success")
         navigate(`/dashboard/`, { replace: true });
       })
       .catch((error) => {
         if(error.code === 'auth/email-already-in-use'){
           setEmailInUse(true);
+          addToast('Email jest już zarejestrowany', 'error');
         }
       });
       }

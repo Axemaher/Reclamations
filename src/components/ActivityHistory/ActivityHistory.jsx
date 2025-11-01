@@ -4,10 +4,12 @@ import { useParams } from "react-router";
 import { AuthContext } from "../../app/AuthProvider";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../app/firebaseConfig";
-
+import { ToastContext } from "../../components/ToastsNotification/ToastNotification";
 
 function ActivityHistory({dispatch}) {
     
+    const { addToast } = useContext(ToastContext);
+
     const { id } = useParams();
     const { uid } = useContext(AuthContext);
 
@@ -54,6 +56,7 @@ function ActivityHistory({dispatch}) {
         setActivityData(newActivityData);
         dispatch({ type: 'SET_ACTIVITY_HISTORY', payload: newActivityData});
         saveActivity(newActivityData);
+        addToast('Pomyślnie usunięto aktywność', 'success')
     }
 
     const handleAddActivity = (e) => {
@@ -74,6 +77,7 @@ function ActivityHistory({dispatch}) {
             dispatch({ type: 'SET_ACTIVITY_HISTORY', payload: newActivityData});
             saveActivity(newActivityData);
             setactivityNote('');
+            addToast('Pomyślnie dodano aktywność', 'success')
         }
     }
 
