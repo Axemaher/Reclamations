@@ -11,6 +11,7 @@ import { uploadBytes, getDownloadURL, ref, getStorage } from "firebase/storage";
 import { db } from "../../app/firebaseConfig";
 import { AuthContext } from "../../app/AuthProvider";
 import { ToastContext } from "../ToastsNotification/ToastNotification";
+import LogisticForm from "./LogisticForm";
 
 function ReclamationForm({mode}) {
 
@@ -151,6 +152,11 @@ const handleResetForm = () => {
                 state={state}
             />
             <ProductForm 
+                handleOnChange={handleOnChange}
+                handleOnBlur={handleOnBlur}
+                state={state}
+            />
+            <LogisticForm 
                 handleOnChange={handleOnChange}
                 handleOnBlur={handleOnBlur}
                 state={state}

@@ -4,19 +4,31 @@ function ClientForm({handleOnChange, handleOnBlur, state}) {
     <fieldset>
         <legend>Dane klienta</legend>
         <p>
-            <label htmlFor="clientName">Pełna nazwa</label>
+            <label htmlFor="contactPerson">Osoba kontaktowa</label>
             <input
             type="text"
             onChange={handleOnChange}
             onBlur={handleOnBlur}
-            name="clientName"
-            value={fields.clientName}
-            id="clientName"
+            name="contactPerson"
+            value={fields.contactPerson}
+            id="contactPerson"
             // required
             />
-            <span>{errors.clientName ? `Wpisz pełną nazwę klienta` : ""}</span>
+            <span>{errors.contactPerson ? `Wpisz dane osoby kontaktowej` : ""}</span>
         </p>
-
+        <p>
+            <label htmlFor="companyName">Firma</label>
+            <input
+            type="text"
+            onChange={handleOnChange}
+            onBlur={handleOnBlur}
+            name="companyName"
+            value={fields.companyName}
+            id="companyName"
+            // optional
+            />
+            <span>{errors.companyName ? `Wpisz dane firmy` : ""}</span>
+        </p>
         <p>
             <label htmlFor="nip">NIP</label>
             <input
@@ -26,6 +38,7 @@ function ClientForm({handleOnChange, handleOnBlur, state}) {
             name="nip"
             value={fields.nip}
             id="nip"
+            // optional
             />
             <span>{errors.nip ? `Podaj prawidłowy NIP` : ""}</span>
         </p>
@@ -80,6 +93,7 @@ function ClientForm({handleOnChange, handleOnBlur, state}) {
             name="email"
             value={fields.email}
             id="email"
+            // required
             />
             <span>{errors.email ? `Podaj prawidłowy adres e-mail` : ""}</span>
         </p>
@@ -121,6 +135,7 @@ function ClientForm({handleOnChange, handleOnBlur, state}) {
             id="clientNote"
             rows="4"
             cols="33"
+            // optional
             />
         </p>
 </fieldset>

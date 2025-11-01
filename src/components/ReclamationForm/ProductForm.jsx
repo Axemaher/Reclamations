@@ -40,6 +40,7 @@ function ProductForm({handleOnChange, handleOnBlur, state}) {
             name="fullName"
             value={fields.fullName}
             id="fullName"
+            // required
             />
             <span>{errors.fullName ? `Podaj pełną nazwę produktu` : ""}</span>
         </p>
@@ -57,7 +58,32 @@ function ProductForm({handleOnChange, handleOnBlur, state}) {
             />
             <span>{errors.catalogNumber ? `Podaj numer katalogowy` : ""}</span>
         </p>
-
+        <p>
+            <label htmlFor="serialNumber">Numer seryjny</label>
+            <input
+            type="text"
+            onChange={handleOnChange}
+            onBlur={handleOnBlur}
+            name="serialNumber"
+            value={fields.serialNumber}
+            id="serialNumber"
+            // optional
+            />
+            <span>{errors.serialNumber ? `Podaj numer seryjny` : ""}</span>
+        </p>
+        <p>
+            <label htmlFor="quantity">Ilość reklamowanych sztuk</label>
+            <input
+            type="number"
+            onChange={handleOnChange}
+            onBlur={handleOnBlur}
+            name="quantity"
+            value={fields.quantity}
+            id="quantity"
+            // required
+            />
+            <span>{errors.quantity ? `Podaj ilość sztuk` : ""}</span>
+        </p>
         <p>
             <label htmlFor="additionalDescription">Opis dodatkowy</label>
             <textarea
@@ -68,6 +94,7 @@ function ProductForm({handleOnChange, handleOnBlur, state}) {
             id="additionalDescription"
             rows="4"
             cols="33"
+            // optional
             />
         </p>
     </fieldset>

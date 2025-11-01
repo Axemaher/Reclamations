@@ -29,7 +29,6 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit}) {
                 />
           <span>{errors.deadlineDate ? `Termin wykonania zlecenia musi być po dacie dodania zlecenia` : ""}</span>
         </p>
-
         <p>   
           <label htmlFor="deliveryMethod">Sposób dostarczenia</label>
           <select 
@@ -61,6 +60,61 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit}) {
           </select>
           <span>{errors.type ? `Wybierz typ zlecenia` : ""}</span>
         </p>
+        <p>   
+          <label htmlFor="priority">Priorytet</label>
+          <select 
+                  onChange={handleOnChange}
+                  onBlur={handleOnBlur}
+                  name="priority"
+                  value={fields.priority}
+                  id="priority"
+                  // required
+                  >
+            <option value="niski">niski</option>
+            <option value="normalny">normalny</option>
+            <option value="wysoki">wysoki</option>
+          </select>
+          <span>{errors.priority ? `Wybierz priorytet` : ""}</span>
+        </p>
+        {modeEdit &&
+        <p>   
+          <label htmlFor="status">Status</label>
+          <select 
+                  onChange={handleOnChange}
+                  onBlur={handleOnBlur}
+                  name="status"
+                  value={fields.status}
+                  id="status"
+                  // required
+                  >
+            <option value="przyjęto">przyjęto</option>
+            <option value="oczekiwanie na dostarczenie">oczekiwanie na dostarczenie</option>
+            <option value="wysłano do producenta">wysłano do producenta</option>
+            <option value="diagnoza">diagnoza</option>
+            <option value="w trakcie">w trakcie</option>
+            <option value="zakończono">zakończono</option>
+          </select>
+          <span>{errors.status ? `Wybierz status` : ""}</span>
+        </p>
+        }
+        <p>   
+          <label htmlFor="reason">Powód</label>
+          <select 
+                  onChange={handleOnChange}
+                  onBlur={handleOnBlur}
+                  name="reason"
+                  value={fields.reason}
+                  id="reason"
+                  // required
+                  >
+            <option value="uszkodzono w dostawie">uszkodzono w dostawie</option>
+            <option value="nie działa">nie działa</option>
+            <option value="wada fabryczna">wada fabryczna</option>
+            <option value="brak elementów w zestawie">brak elementów w zestawie</option>
+            <option value="niska jakość wykonania">niska jakość wykonania</option>
+          </select>
+          <span>{errors.reason ? `Wybierz powód` : ""}</span>
+        </p>
         <p>
           <label htmlFor="dateOfSale">Data sprzedaży</label>
           <input
@@ -87,8 +141,24 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit}) {
                 />
           <span>{errors.salesDocNumber ? `Wpisz numer dokumentu sprzedaży` : ""}</span>
         </p>
+        <p>   
+          <label htmlFor="paymentMethod">Metoda płatności</label>
+          <select 
+                  onChange={handleOnChange}
+                  onBlur={handleOnBlur}
+                  name="paymentMethod"
+                  value={fields.paymentMethod}
+                  id="paymentMethod"
+                  // required
+                  >
+            <option value="gotówka">gotówka</option>
+            <option value="karta">karta</option>
+            <option value="przelew">przelew</option>
+          </select>
+          <span>{errors.paymentMethod ? `Wybierz metodę płatności` : ""}</span>
+        </p>
         <p>
-          <label htmlFor="orderDescription">Opis zlecenia</label>
+          <label htmlFor="orderDescription">Dodatkowy opis zlecenia</label>
           <textarea
                 type="text"
                 onChange={handleOnChange}
@@ -111,7 +181,7 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit}) {
                 onBlur={handleOnBlur}
                 name="attachment"
                 id="attachment"
-                // required
+                // optional
                 />
           <span>{errors.attachment ? `Coś poszło nie tak, spróbuj ponownie` : ""}</span>
           {modeEdit && fields.attachmentUrl && (

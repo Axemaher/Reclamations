@@ -1,17 +1,23 @@
 const initialState = { 
     fields: {
-        // order
+        // order fields
         submissionDate: new Date().toISOString().slice(0, 10),
         deadlineDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
         deliveryMethod: 'email',
         type: 'po gwarancyjna',
+        priority: 'normalny',
+        status: 'przyjęto',
+        reason: 'uszkodzenie',
         dateOfSale: new Date().toISOString().slice(0, 10),
         salesDocNumber: '',
+        paymentMethod: 'gotówka',
         orderDescription: '',
         attachment: '',
         attachmentUrl: '',
-        // client
-        clientName: '',
+
+        // client fields 
+        contactPerson: '',
+        companyName: '',
         nip: '',
         address: '',
         postalCode: '',
@@ -20,13 +26,23 @@ const initialState = {
         phonePrefix: "+48",
         phoneNumber: '',
         clientNote: '',
-        // product
+
+        // product fields
         manufacturer: '',
         shortName: '',
         fullName: '',
         catalogNumber: '',
+        serialNumber: '',
+        quantity: '1',
         additionalDescription: '',
-        // activity history
+
+        // logistic fields
+        returnTrackingNumber: '',
+        courier: '',
+        returnAddress: '',
+        productIsReturned: 'wybierz', 
+
+        // activity history fields
         activityData: [
             {
                 id: 'initial',
@@ -39,12 +55,18 @@ const initialState = {
         deadlineDate: false,
         deliveryMethod: false,
         type: false,
+        priority: false,
+        status: false,
+        reason: false,
         dateOfSale: false,
         salesDocNumber: false,
+        paymentMethod: false,
         orderDescription: false,
         attachment: false,
         attachmentUrl: false,
-        clientName: false,
+
+        contactPerson: false,
+        companyName: false,
         nip: false,
         address: false,
         postalCode: false,
@@ -53,11 +75,19 @@ const initialState = {
         phonePrefix: false,
         phoneNumber: false,
         clientNote: false,
+
         manufacturer: false,
         shortName: false,
         fullName: false,
         catalogNumber: false,
+        serialNumber: false,
+        quantity: false,
         additionalDescription: false,
+
+        returnTrackingNumber: false,
+        courier: false,
+        returnAddress: false,
+        productIsReturned: false,
     }
  };
 
@@ -72,11 +102,14 @@ const validators = {
         deadlineDate: (v, fields) => v,
         deliveryMethod: v => v,
         type: v => v,
+        priority: v => v,
+        status: v => v,
+        reason: v => v,
         dateOfSale: v => v <= new Date().toISOString().slice(0, 10),
         salesDocNumber: v => v.length >= 3,
-        orderDescription: v => v.length >= 3,
+        // orderDescription: v => v.length >= 3,
     // client
-        clientName: v => v.length >= 3,
+        contactPerson: v => v.length >= 3,
         // nip: v => v,
         address: v => v.length >= 3,
         postalCode: v => postalCodePattern.test(v),
@@ -91,7 +124,13 @@ const validators = {
         fullName: v => v.length >= 3,
         catalogNumber: v => v.length >= 1,
         // additionalDescription: v => v
-        activityNote: v => v.length >=3
+        quantity: v => v !== 0 && v.length >=1,
+        activityNote: v => v.length >=3,
+
+        // returnTrackingNumber: v => v,
+        // courier: v => v,
+        // returnAddress: v => v,
+        productIsReturned: v => v === 'tak' || v === 'nie',
     };
 
 const validateField = (name, value, fields) => {
