@@ -1,4 +1,4 @@
-function OrderForm({handleOnChange, handleOnBlur, state, modeEdit}) {
+function OrderForm({handleOnChange, handleOnBlur, state, modeEdit, settingsData}) {
   const {fields, errors} = state;
   return <>
     <fieldset>
@@ -87,12 +87,9 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit}) {
                   id="status"
                   // required
                   >
-            <option value="przyjęto">przyjęto</option>
-            <option value="oczekiwanie na dostarczenie">oczekiwanie na dostarczenie</option>
-            <option value="wysłano do producenta">wysłano do producenta</option>
-            <option value="diagnoza">diagnoza</option>
-            <option value="w trakcie">w trakcie</option>
-            <option value="zakończono">zakończono</option>
+                    {settingsData.status.map((status, index) => (
+                      <option key={index} value={status.name}>{status.name}</option>
+                    ))}
           </select>
           <span>{errors.status ? `Wybierz status` : ""}</span>
         </p>

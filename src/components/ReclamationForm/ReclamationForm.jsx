@@ -23,37 +23,53 @@ const navigate = useNavigate();
 const modeEdit = mode === 'edit' ? true : false;
 
 const [noDataError, setNoDataError] = useState(null);
-const [loading, setLoading] = useState(modeEdit ? true : false)
+const [loading, setLoading] = useState(modeEdit ? true : false);
 const [attachment, setAttachment] = useState(null);
+const [settingsData, setSettingsData] = useState(null);
 const [state, dispatch] = useReducer(reclamationReducer, initialState);
 
 
 useEffect(() => {
-    if(modeEdit) {
-        if(!uid) { return } 
-        else {
-        const getData = async () => {
-            const docRef = doc(db, "users", uid, 'reclamations', id);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                dispatch({ type: 'SET_ALL_FIELDS', payload: docSnap.data()});
-                if(modeEdit) {
-                    setNoDataError(false);
-                    setLoading(false)
-                }
-            } else {
-                console.log("No such document!");
-                if(modeEdit) {
-                    setNoDataError(true);
-                    setLoading(true)
-                }
-            }
-        };
-        getData();
-        }
-    }
+    if (!modeEdit) return;
 
-  },[uid, id, modeEdit] );
+    if (!uid) return;
+
+    const getData = async () => {
+        setLoading(true);
+
+        try {
+        // SETTINGS
+        const settingsRef = doc(db, "users", uid, "profile", "settings");
+        const settingsSnap = await getDoc(settingsRef);
+
+        if (settingsSnap.exists()) {
+            setSettingsData(settingsSnap.data());
+        } else {
+            console.log("no document!");
+            setSettingsData({});
+        }
+
+        // RECLAMATION DATA
+        const reclamationRef = doc(db, "users", uid, "reclamations", id);
+        const reclamationSnap = await getDoc(reclamationRef);
+
+        if (reclamationSnap.exists()) {
+            dispatch({ type: "SET_ALL_FIELDS", payload: reclamationSnap.data() });
+            setNoDataError(false);
+        } else {
+            setNoDataError(true);
+        }
+
+        } catch (e) {
+        console.error(e);
+        setNoDataError(true);
+        } finally {
+        setLoading(false);
+        }
+    };
+
+    getData();
+}, [uid, id, modeEdit]);
 
 
 const handleOnChange = (e) => {
@@ -145,6 +161,7 @@ const handleResetForm = () => {
                 handleOnBlur={handleOnBlur}
                 state={state}
                 modeEdit={modeEdit}
+                settingsData={settingsData}
             />
             <ClientForm 
                 handleOnChange={handleOnChange}

@@ -4,6 +4,7 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, } from "firebase/firestore"; 
 import { db } from "../../app/firebaseConfig";
 import { ToastContext } from "../ToastsNotification/ToastNotification";
+import predefinedSettings from "./predefinedSettings";
 
 function RegisterForm() {
 
@@ -95,6 +96,8 @@ function RegisterForm() {
           firstName: registerData.firstName,
           lastName: registerData.lastName,
         });
+
+        await setDoc(doc(db, "users", uid, "profile", "settings"), predefinedSettings);
 
         navigate(`/dashboard/`, { replace: true });
       })

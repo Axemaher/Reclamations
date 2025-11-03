@@ -10,6 +10,7 @@ import ResetPage from "../pages/ResetPage/ResetPage";
 import DashboardPage from "../pages/DashboardPage/DashboardPage";
 import AddReclamationPage from "../pages/AddReclamationPage/AddReclamationPage";
 import EditReclamationPage from "../pages/EditReclamationPage/EditReclamationPage";
+import SettingsPage from "../pages/SettingsPage/SettingsPage";
 import { AuthContext } from "./AuthProvider";
 
 
@@ -27,7 +28,8 @@ function App() {
           <Link to="/register"> Register </Link>|
           <Link to="/resetPassword"> Reset password </Link>|
           <Link to="/addReclamation"> Add </Link>|
-          <Link to="/dashboard"> Dashboard </Link>
+          <Link to="/dashboard"> Dashboard </Link>|
+          <Link to="/settings"> Ustawienia </Link>
         </nav>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -55,6 +57,14 @@ function App() {
             element={
               <ProtectedRoute userLogged={userLogged}>
                 <EditReclamationPage/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute userLogged={userLogged}>
+                <SettingsPage/>
               </ProtectedRoute>
             }
           />
