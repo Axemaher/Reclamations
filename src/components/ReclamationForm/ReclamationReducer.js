@@ -124,13 +124,14 @@ const validators = {
         fullName: v => v.length >= 3,
         catalogNumber: v => v.length >= 1,
         // additionalDescription: v => v
-        quantity: v => v !== 0 && v.length >=1,
-        activityNote: v => v.length >=3,
-
+        quantity: v => v !== 0 && v.length >= 1,
+    // logistic
         // returnTrackingNumber: v => v,
         // courier: v => v,
         // returnAddress: v => v,
         productIsReturned: v => v === 'tak' || v === 'nie',
+    // activity history
+        activityNote: v => v.length >= 3,
     };
 
 const validateField = (name, value, fields) => {
