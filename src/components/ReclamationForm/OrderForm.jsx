@@ -39,9 +39,9 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit, settingsData}
                   id="deliveryMethod"
                   // required
                   >
-            <option value="osobiście">osobiście</option>
-            <option value="e-mail">e-mail</option>
-            <option value="przysłano">przysłano</option>
+                  {settingsData.deliveryMethod.map((deliveryMethod, index) => (
+                    <option key={index} value={deliveryMethod.name}>{deliveryMethod.name}</option>
+                  ))}
           </select>
           <span>{errors.deliveryMethod ? `Wybierz metodę dostarczenia` : ""}</span>
         </p>
@@ -55,8 +55,9 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit, settingsData}
                   id="type"
                   // required
                   >
-            <option value="gwarancyjne">gwarancyjne</option>
-            <option value="pogwarancyjne">pogwarancyjne</option>
+                  {settingsData.type.map((type, index) => (
+                    <option key={index} value={type.name}>{type.name}</option>
+                  ))}
           </select>
           <span>{errors.type ? `Wybierz typ zlecenia` : ""}</span>
         </p>
@@ -70,9 +71,9 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit, settingsData}
                   id="priority"
                   // required
                   >
-            <option value="niski">niski</option>
-            <option value="normalny">normalny</option>
-            <option value="wysoki">wysoki</option>
+                  {settingsData.priority.map((priority, index) => (
+                    <option key={index} value={priority.name}>{priority.name}</option>
+                  ))}
           </select>
           <span>{errors.priority ? `Wybierz priorytet` : ""}</span>
         </p>
@@ -87,9 +88,9 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit, settingsData}
                   id="status"
                   // required
                   >
-                    {settingsData.status.map((status, index) => (
-                      <option key={index} value={status.name}>{status.name}</option>
-                    ))}
+                  {settingsData.status.map((status, index) => (
+                    <option key={index} value={status.name}>{status.name}</option>
+                  ))}
           </select>
           <span>{errors.status ? `Wybierz status` : ""}</span>
         </p>
@@ -104,11 +105,9 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit, settingsData}
                   id="reason"
                   // required
                   >
-            <option value="uszkodzono w dostawie">uszkodzono w dostawie</option>
-            <option value="nie działa">nie działa</option>
-            <option value="wada fabryczna">wada fabryczna</option>
-            <option value="brak elementów w zestawie">brak elementów w zestawie</option>
-            <option value="niska jakość wykonania">niska jakość wykonania</option>
+                  {settingsData.reason.map((reason, index) => (
+                    <option key={index} value={reason.name}>{reason.name}</option>
+                  ))}
           </select>
           <span>{errors.reason ? `Wybierz powód` : ""}</span>
         </p>
@@ -148,9 +147,9 @@ function OrderForm({handleOnChange, handleOnBlur, state, modeEdit, settingsData}
                   id="paymentMethod"
                   // required
                   >
-            <option value="gotówka">gotówka</option>
-            <option value="karta">karta</option>
-            <option value="przelew">przelew</option>
+                  {settingsData.paymentMethod.map((paymentMethod, index) => (
+                    <option key={index} value={paymentMethod.name}>{paymentMethod.name}</option>
+                  ))}
           </select>
           <span>{errors.paymentMethod ? `Wybierz metodę płatności` : ""}</span>
         </p>

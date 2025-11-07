@@ -2,11 +2,13 @@ import { useEffect, useState, useContext } from "react";
 import { doc, collection, query, where, getDocs, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../app/firebaseConfig";
 import { AuthContext } from "../../app/AuthProvider";
+import { ToastContext } from "../ToastsNotification/ToastNotification";
 
 
-function StatusesDefinitions() {
+function SettingDefinition({settingDataName, label}) {
 
 const { uid } = useContext(AuthContext);
+const { addToast } = useContext(ToastContext);
 
 const [settingsData, setSettingsData] = useState(null);
 const [state, setState] = useState({
@@ -57,18 +59,20 @@ const [errors, setErrors] = useState({
 
   const update = async (newData) => {
     try {
-        await updateDoc(doc(db, "users", uid, "profile", "settings"), { status: newData });
-        setSettingsData((prevState) => ({...prevState, status: newData}));
+        await updateDoc(doc(db, "users", uid, "profile", "settings"), { [settingDataName]: newData });
+        setSettingsData((prevState) => ({...prevState, [settingDataName]: newData}));
         setState((prevState) => ({...prevState, fieldValue: ''}));
+        addToast('Dane zaktualizowane poprawnie', 'success');
     } catch (error) {
         console.log(error);
+        addToast('Nie udało się zaktualizować danych', 'error');
     }
   }
 
   const fieldInUse = async (fieldName) => {
     try {
       const data = [];
-      const q = query(collection(db, "users", uid, "reclamations"), where("status", "==", fieldName));
+      const q = query(collection(db, "users", uid, "reclamations"), where(settingDataName, "==", fieldName));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
       return data.length;
@@ -92,16 +96,13 @@ const [errors, setErrors] = useState({
         return;
       }
 
-      let dataCopy = [...settingsData.status];
+      let dataCopy = [...settingsData[settingDataName]];
       dataCopy = dataCopy.filter((el) => el.id !== id);
       await update(dataCopy);
     } catch (error) {
       console.log(error)
     }
   }
-
-
-
 
   const handleAdd = async () => {
     errorReset();
@@ -111,7 +112,7 @@ const [errors, setErrors] = useState({
       return;
     }
 
-    const dataCopy = [...settingsData.status];
+    const dataCopy = [...settingsData[settingDataName]];
     const duplicated = fieldNameDuplicated(dataCopy);
 
     if (duplicated) {
@@ -128,9 +129,9 @@ if (errors.settingsDataError) return <p>Błąd wczytywania ustawienia, spróbuj 
 if (state.loading) return <p>Ładowanie ustawień...</p>
 else return (
     <div>
-        <p>Statusy:</p>
+        <h3>{label}y:</h3>
         <ul>
-          {settingsData.status.map((el, index) => (
+          {settingsData[settingDataName].map((el, index) => (
             <li key={index}>
               {el.name}
               {el.id !== null &&
@@ -140,22 +141,22 @@ else return (
           ))}
         </ul>
         <p>
-        <label htmlFor="addStatus">Dodaj status</label>
+        <label htmlFor="addSettingData">Dodaj wartość</label>
         <input
           type="text"
           onChange={handleOnChange}
-          name="addStatus"
+          name="addSettingData"
           value={state.fieldValue}
-          id="addStatus"
+          id="addSettingData"
         />
         <span>
-          {errors.fieldExist && `Status o takiej nazwie już istnieje, wpisz inną nazwę`}
-          {errors.fieldInUse && `Status jest w użyciu, zmień status w zleceniach na inny i wróc by go usunąć`}
-          {errors.fieldValidation && `Status musi mieć przynajmniej 3 znaki` }
+          {errors.fieldExist && `${label} o takiej nazwie już istnieje, wpisz inną nazwę`}
+          {errors.fieldInUse && `podana wartość jest w użyciu, zmień wartość w zleceniach na inną i wróć by ją usunąć`}
+          {errors.fieldValidation && `wartość musi mieć przynajmniej 3 znaki` }
         </span>
       </p>
       <button onClick={handleAdd}>Dodaj</button>
     </div>)
 }
 
-export default StatusesDefinitions;
+export default SettingDefinition;

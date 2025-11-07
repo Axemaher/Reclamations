@@ -23,41 +23,40 @@ const navigate = useNavigate();
 const modeEdit = mode === 'edit' ? true : false;
 
 const [noDataError, setNoDataError] = useState(null);
-const [loading, setLoading] = useState(modeEdit ? true : false);
+const [loading, setLoading] = useState(true);
 const [attachment, setAttachment] = useState(null);
 const [settingsData, setSettingsData] = useState(null);
 const [state, dispatch] = useReducer(reclamationReducer, initialState);
 
 
 useEffect(() => {
-    if (!modeEdit) return;
-
     if (!uid) return;
 
     const getData = async () => {
         setLoading(true);
-
         try {
-        // SETTINGS
+        // SETTINGS DATA
         const settingsRef = doc(db, "users", uid, "profile", "settings");
         const settingsSnap = await getDoc(settingsRef);
 
         if (settingsSnap.exists()) {
             setSettingsData(settingsSnap.data());
         } else {
-            console.log("no document!");
+            console.log("no settings data!");
             setSettingsData({});
         }
+        
+        if(modeEdit) {
+            // RECLAMATION DATA
+            const reclamationRef = doc(db, "users", uid, "reclamations", id);
+            const reclamationSnap = await getDoc(reclamationRef);
 
-        // RECLAMATION DATA
-        const reclamationRef = doc(db, "users", uid, "reclamations", id);
-        const reclamationSnap = await getDoc(reclamationRef);
-
-        if (reclamationSnap.exists()) {
-            dispatch({ type: "SET_ALL_FIELDS", payload: reclamationSnap.data() });
-            setNoDataError(false);
-        } else {
-            setNoDataError(true);
+            if (reclamationSnap.exists()) {
+                dispatch({ type: "SET_ALL_FIELDS", payload: reclamationSnap.data() });
+                setNoDataError(false);
+            } else {
+                setNoDataError(true);
+            }
         }
 
         } catch (e) {
@@ -151,9 +150,10 @@ const handleSubmit = async (e) => {
 const handleResetForm = () => {
     dispatch({ type: 'RESET_FIELDS'});
 }
-    if (loading) return <p>ładowanie...</p>
-    if (noDataError && modeEdit) return <p>Dokument o wskazanym id {id} nie znajduje się w bazie.</p>
-    else return (
+
+if (loading) return <p>ładowanie...</p>
+if (noDataError && modeEdit) return <p>Dokument o wskazanym id {id} nie znajduje się w bazie.</p>
+else return (
     <>
         <form onSubmit={handleSubmit}>
             <OrderForm 
