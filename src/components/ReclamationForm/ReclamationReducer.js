@@ -124,7 +124,7 @@ const validators = {
         fullName: v => v.length >= 3,
         catalogNumber: v => v.length >= 1,
         // additionalDescription: v => v
-        quantity: v => v !== 0 && v.length >= 1,
+        quantity: v => v > 0,
     // logistic
         // returnTrackingNumber: v => v,
         // courier: v => v,

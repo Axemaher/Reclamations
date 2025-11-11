@@ -129,7 +129,7 @@ if (errors.settingsDataError) return <p>Błąd wczytywania ustawienia, spróbuj 
 if (state.loading) return <p>Ładowanie ustawień...</p>
 else return (
     <div>
-        <h3>{label}y:</h3>
+        <h3>{label}</h3>
         <ul>
           {settingsData[settingDataName].map((el, index) => (
             <li key={index}>

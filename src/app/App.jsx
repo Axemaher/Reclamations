@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import '../App.scss';
 import ProtectedRoute from "./ProtectedRoute";
 import Layout from "../components/Layout/Layout";
@@ -11,6 +11,7 @@ import DashboardPage from "../pages/DashboardPage/DashboardPage";
 import AddReclamationPage from "../pages/AddReclamationPage/AddReclamationPage";
 import EditReclamationPage from "../pages/EditReclamationPage/EditReclamationPage";
 import SettingsPage from "../pages/SettingsPage/SettingsPage";
+import Navbar from "../components/Navbar/Navbar";
 import { AuthContext } from "./AuthProvider";
 
 
@@ -22,15 +23,8 @@ function App() {
   return (
     <Layout>
       <BrowserRouter>
-        <nav>
-          <Link to="/"> Home </Link>|
-          <Link to="/login"> Login </Link>|
-          <Link to="/register"> Register </Link>|
-          <Link to="/resetPassword"> Reset password </Link>|
-          <Link to="/addReclamation"> Add </Link>|
-          <Link to="/dashboard"> Dashboard </Link>|
-          <Link to="/settings"> Ustawienia </Link>
-        </nav>
+        <Navbar />
+        <div className="content">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage/>} />
@@ -69,6 +63,7 @@ function App() {
             }
           />
         </Routes>
+        </div>
       </BrowserRouter>
     </Layout>
   )

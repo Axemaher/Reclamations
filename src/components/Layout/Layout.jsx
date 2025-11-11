@@ -1,8 +1,10 @@
+import '../Layout/Layout.scss';
+
 const Layout = ({ children }) => {
   return (
-    <>
+    <div className='layout'>
       {children}
-    </>
+    </div>
   );
 }
 

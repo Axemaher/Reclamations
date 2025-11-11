@@ -1,10 +1,10 @@
 import LoginForm from "../../components/LoginForm/LoginForm";
 
-function LoginPage({setUserLogged}) {
+function LoginPage() {
   return (
     <>
       <h1>Login page</h1>
-      <LoginForm setUserLogged={setUserLogged}/>
+      <LoginForm />
     </>
   )
 }

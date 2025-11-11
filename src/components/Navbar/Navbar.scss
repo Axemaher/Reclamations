@@ -1,0 +1,116 @@
+@use '../Layout/Layout.scss';
+
+.navbar {
+  width: 100%;
+  height: 60px;
+  background-color: Layout.$color-primary;
+  color: Layout.$color-text-alt;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  box-shadow: Layout.$standard-shadow;
+  z-index: 00000;
+}
+
+.navbar .logo {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.navbar .menu {
+  display: flex;
+  gap: 1rem;
+
+  .menu-link {
+    position: relative;
+    color: Layout.$color-border;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.25rem 0;
+    transition: color 0.3s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2px;
+      background-color: Layout.$color-border;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.25s ease-out;
+    }
+
+    &:hover::after {
+      transform: scaleY(1);
+    }
+
+    &.active::after {
+      transform: scaleY(1);
+    }
+
+    &.active {
+      color: Layout.$color-border;
+      font-weight: 600;
+    }
+  }
+}
+
+.navbar .hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+
+  span {
+    background: Layout.$color-border;
+    height: 3px;
+    width: 100%;
+    margin: 3px 0;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar .menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: Layout.$color-primary;
+    flex-direction: column;
+    width: 180px;
+    padding: 1rem;
+    display: none;
+    box-shadow: Layout.$standard-shadow;
+    border-radius: 0 0 6px 6px;
+
+    .menu-link {
+      padding: 0.5rem 0;
+    }
+  }
+
+  .navbar .hamburger {
+    display: flex;
+  }
+
+  .navbar.active .menu {
+    display: flex;
+  }
+
+  .navbar.active .hamburger span:nth-child(1) {
+    transform: rotate(45deg) translateY(11px);
+    margin-left: 9px;
+  }
+  .navbar.active .hamburger span:nth-child(2) {
+    opacity: 0;
+  }
+  .navbar.active .hamburger span:nth-child(3) {
+    transform: rotate(-45deg) translateY(-11px);
+    margin-left: 9px;
+  }
+}
