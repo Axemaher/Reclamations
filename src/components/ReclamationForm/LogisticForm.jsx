@@ -2,11 +2,13 @@ function LogisticDataForm({ handleOnChange, handleOnBlur, state }) {
   const { fields, errors } = state;
 
   return (
-    <fieldset>
-      <legend>Dane logistyczne</legend>
+    <fieldset className="form__fieldset form__fieldset--width-form">
+      <legend className="form__legend">Dane logistyczne</legend>
 
-      <p>
-        <label htmlFor="returnTrackingNumber">Numer przesyłki zwrotnej</label>
+      <div className="form-row form-row--width">
+        <label className="form-row__label" htmlFor="returnTrackingNumber">
+          Numer przesyłki zwrotnej
+        </label>
         <input
           type="text"
           onChange={handleOnChange}
@@ -14,13 +16,25 @@ function LogisticDataForm({ handleOnChange, handleOnBlur, state }) {
           name="returnTrackingNumber"
           value={fields.returnTrackingNumber}
           id="returnTrackingNumber"
-          // optional
+          aria-invalid={errors.returnTrackingNumber ? "true" : "false"}
+          aria-describedby="returnTrackingNumber-error"
+          className={`form-row__input ${
+            errors.returnTrackingNumber && "form-row__input-error"
+          }`}
         />
-        <span>{errors.returnTrackingNumber ? `Podaj numer przesyłki` : ""}</span>
-      </p>
+        <span
+          className="form-row__span-error"
+          id="returnTrackingNumber-error"
+          aria-live="polite"
+        >
+          {errors.returnTrackingNumber && "Podaj numer przesyłki"}
+        </span>
+      </div>
 
-      <p>
-        <label htmlFor="courier">Firma kurierska</label>
+      <div className="form-row form-row--width">
+        <label className="form-row__label" htmlFor="courier">
+          Firma kurierska
+        </label>
         <input
           type="text"
           onChange={handleOnChange}
@@ -28,13 +42,25 @@ function LogisticDataForm({ handleOnChange, handleOnBlur, state }) {
           name="courier"
           value={fields.courier}
           id="courier"
-          // optional
+          aria-invalid={errors.courier ? "true" : "false"}
+          aria-describedby="courier-error"
+          className={`form-row__input ${
+            errors.courier && "form-row__input-error"
+          }`}
         />
-        <span>{errors.courier ? `Podaj firmę kurierską` : ""}</span>
-      </p>
+        <span
+          className="form-row__span-error"
+          id="courier-error"
+          aria-live="polite"
+        >
+          {errors.courier && "Podaj firmę kurierską"}
+        </span>
+      </div>
 
-      <p>
-        <label htmlFor="returnAddress">Adres zwrotu</label>
+      <div className="form-row form-row--width">
+        <label className="form-row__label" htmlFor="returnAddress">
+          Adres zwrotu
+        </label>
         <input
           type="text"
           onChange={handleOnChange}
@@ -42,27 +68,49 @@ function LogisticDataForm({ handleOnChange, handleOnBlur, state }) {
           name="returnAddress"
           value={fields.returnAddress}
           id="returnAddress"
-          // optional
+          aria-invalid={errors.returnAddress ? "true" : "false"}
+          aria-describedby="returnAddress-error"
+          className={`form-row__input ${
+            errors.returnAddress && "form-row__input-error"
+          }`}
         />
-        <span>{errors.returnAddress ? `Podaj adres zwrotu` : ""}</span>
-      </p>
+        <span
+          className="form-row__span-error"
+          id="returnAddress-error"
+          aria-live="polite"
+        >
+          {errors.returnAddress && "Podaj adres zwrotu"}
+        </span>
+      </div>
 
-      <p>
-        <label htmlFor="productIsReturned">Produkt zwrócony?</label>
+      <div className="form-row form-row--width">
+        <label className="form-row__label" htmlFor="productIsReturned">
+          Produkt zwrócony?
+        </label>
         <select
           onChange={handleOnChange}
           onBlur={handleOnBlur}
           name="productIsReturned"
           value={fields.productIsReturned}
           id="productIsReturned"
-          // optional
+          aria-invalid={errors.productIsReturned ? "true" : "false"}
+          aria-describedby="productIsReturned-error"
+          className={`form-row__input ${
+            errors.productIsReturned && "form-row__input-error"
+          }`}
         >
           <option value="">Wybierz</option>
           <option value="tak">Tak</option>
           <option value="nie">Nie</option>
         </select>
-        <span>{errors.productIsReturned ? `Wybierz status zwrotu` : ""}</span>
-      </p>
+        <span
+          className="form-row__span-error"
+          id="productIsReturned-error"
+          aria-live="polite"
+        >
+          {errors.productIsReturned && "Wybierz status zwrotu"}
+        </span>
+      </div>
     </fieldset>
   );
 }

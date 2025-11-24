@@ -1,20 +1,8 @@
-$color-bg: #ffffff;
-$color-bg-alt: #f9fafb;
-$color-border: #d1d5db;
-$color-border-alt: #d1d5db;
-$color-text: #1f2937;
-$color-text-alt: #f9fafb;
-$color-primary: #2563eb;
-$color-primary-hover: #1d4ed8;
-$color-error: #dc2626;
-$transition: all 0.2s ease;
-$light-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-$standard-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-$radius: 8px;
+@use "../../global_styles/variables.scss";
 
 .layout {
-  background-color: $color-bg-alt;
-  color: $color-text;
+  background-color: variables.$color-bg-alt;
+  color: variables.$color-text;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -38,49 +26,10 @@ $radius: 8px;
   overflow-y: auto;
 }
 
-.button {
-  display: inline-flex;
+.content > div {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: $radius;
-  font-weight: 600;
-  font-size: 1rem;
-  line-height: 1.5;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: $light-shadow;
-  border: none;
-  user-select: none;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: $standard-shadow;
-  }
-
-  &:active {
-    transform: translateY(0);
-    box-shadow: $light-shadow;
-  }
-
-  &-primary {
-    background-color: $color-primary;
-    color: $color-text-alt;
-
-    &:hover {
-      background-color: $color-primary-hover;
-    }
-  }
-
-  &-secondary {
-    background-color: $color-text-alt;
-    color: $color-primary;
-    border: 2px solid $color-primary;
-
-    &:hover {
-      background-color: $color-text-alt;
-    }
-  }
+  width: 100%;
 }

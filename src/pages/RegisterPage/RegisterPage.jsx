@@ -1,12 +1,11 @@
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
 
-function RegisterPage({setUserLogged}) {
+function RegisterPage() {
   return (
-    <>
-      <h1>Register page</h1>
-      <RegisterForm setUserLogged={setUserLogged}/>
-    </>
-  )
+    <div className="register-page">
+      <RegisterForm />
+    </div>
+  );
 }
 
-export default RegisterPage
+export default RegisterPage;

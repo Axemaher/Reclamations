@@ -2,11 +2,10 @@ import ResetPasswordForm from "../../components/ResetPasswordForm/ResetPasswordF
 
 function ResetPage() {
   return (
-    <>
-      <h1>Reset password page</h1>
-      <ResetPasswordForm/>
-    </>
-  ) 
+    <div className="reset-password-page">
+      <ResetPasswordForm />
+    </div>
+  );
 }
 
-export default ResetPage
+export default ResetPage;

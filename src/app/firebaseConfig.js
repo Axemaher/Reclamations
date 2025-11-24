@@ -12,13 +12,12 @@ const firebaseConfig = {
   projectId: "reclamations-909bd",
   storageBucket: "reclamations-909bd.firebasestorage.app",
   messagingSenderId: "560741995161",
-  appId: "1:560741995161:web:c05accad5930dc53d85e08"
+  appId: "1:560741995161:web:c05accad5930dc53d85e08",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-
 const db = getFirestore(app);
 
-export {db, app}
+export { db, app };

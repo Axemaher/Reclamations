@@ -3,19 +3,25 @@ function SettingsPage() {
   return (
     <>
       <h1>Ustawienia</h1>
-      <SettingDefinition settingDataName={'deliveryMethod'} label={'metoda dostawy'}/>
+      <SettingDefinition
+        settingDataName={"deliveryMethod"}
+        label={"metoda dostawy"}
+      />
       ------------
-      <SettingDefinition settingDataName={'type'} label={'typ'}/>
+      <SettingDefinition settingDataName={"type"} label={"typ"} />
       ------------
-      <SettingDefinition settingDataName={'priority'} label={'priorytet'}/>
+      <SettingDefinition settingDataName={"priority"} label={"priorytet"} />
       ------------
-      <SettingDefinition settingDataName={'status'} label={'status'}/>
+      <SettingDefinition settingDataName={"status"} label={"status"} />
       ------------
-      <SettingDefinition settingDataName={'reason'} label={'powód'}/>
+      <SettingDefinition settingDataName={"reason"} label={"powód"} />
       ------------
-      <SettingDefinition settingDataName={'paymentMethod'} label={'metoda płatności'}/>
+      <SettingDefinition
+        settingDataName={"paymentMethod"}
+        label={"metoda płatności"}
+      />
     </>
-  ) 
+  );
 }
 
-export default SettingsPage
+export default SettingsPage;

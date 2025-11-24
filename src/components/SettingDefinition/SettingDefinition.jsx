@@ -1,98 +1,117 @@
 import { useEffect, useState, useContext } from "react";
-import { doc, collection, query, where, getDocs, updateDoc, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "../../app/firebaseConfig";
 import { AuthContext } from "../../app/AuthProvider";
 import { ToastContext } from "../ToastsNotification/ToastNotification";
 
+function SettingDefinition({ settingDataName, label }) {
+  const { uid } = useContext(AuthContext);
+  const { addToast } = useContext(ToastContext);
 
-function SettingDefinition({settingDataName, label}) {
-
-const { uid } = useContext(AuthContext);
-const { addToast } = useContext(ToastContext);
-
-const [settingsData, setSettingsData] = useState(null);
-const [state, setState] = useState({
-  loading: true,
-  fieldValue: ''
-})
-const [errors, setErrors] = useState({
-  fieldExist: false,
-  fieldInUse: false,
-  fieldValidation: false,
-  settingsDataError: false,
-})
+  const [settingsData, setSettingsData] = useState(null);
+  const [state, setState] = useState({
+    loading: true,
+    fieldValue: "",
+  });
+  const [errors, setErrors] = useState({
+    fieldExist: false,
+    fieldInUse: false,
+    fieldValidation: false,
+    settingsDataError: false,
+  });
 
   useEffect(() => {
     if (!uid) return;
 
     const docRef = doc(db, "users", uid, "profile", "settings");
 
-    const unsubscribe = onSnapshot( docRef, (docSnap) => {
+    const unsubscribe = onSnapshot(
+      docRef,
+      (docSnap) => {
         if (docSnap.exists()) {
           errorReset();
           setSettingsData(docSnap.data());
         } else {
           console.log("No such document!");
-          setErrors((prevState) => ({...prevState, settingsDataError: true}));
+          setErrors((prevState) => ({ ...prevState, settingsDataError: true }));
         }
-        setState((prevState) => ({...prevState, loading: false}));
+        setState((prevState) => ({ ...prevState, loading: false }));
       },
       (error) => {
         console.log("error:", error);
-        setErrors(prev => ({ ...prev, settingsDataError: true }));
-        setState(prev => ({ ...prev, loading: false }));
+        setErrors((prev) => ({ ...prev, settingsDataError: true }));
+        setState((prev) => ({ ...prev, loading: false }));
       }
     );
 
     return () => unsubscribe();
-
   }, [uid]);
-
 
   const handleOnChange = (e) => {
     setState((prevState) => ({ ...prevState, fieldValue: e.target.value }));
-  }
+  };
 
   const errorReset = () => {
-    setErrors((prevState) =>({ ...prevState, fieldExist: false, fieldInUse: false, fieldValidation: false }));
-  }
+    setErrors((prevState) => ({
+      ...prevState,
+      fieldExist: false,
+      fieldInUse: false,
+      fieldValidation: false,
+    }));
+  };
 
   const update = async (newData) => {
     try {
-        await updateDoc(doc(db, "users", uid, "profile", "settings"), { [settingDataName]: newData });
-        setSettingsData((prevState) => ({...prevState, [settingDataName]: newData}));
-        setState((prevState) => ({...prevState, fieldValue: ''}));
-        addToast('Dane zaktualizowane poprawnie', 'success');
+      await updateDoc(doc(db, "users", uid, "profile", "settings"), {
+        [settingDataName]: newData,
+      });
+      setSettingsData((prevState) => ({
+        ...prevState,
+        [settingDataName]: newData,
+      }));
+      setState((prevState) => ({ ...prevState, fieldValue: "" }));
+      addToast("Dane zaktualizowane poprawnie", "success");
     } catch (error) {
-        console.log(error);
-        addToast('Nie udało się zaktualizować danych', 'error');
+      console.log(error);
+      addToast("Nie udało się zaktualizować danych", "error");
     }
-  }
+  };
 
   const fieldInUse = async (fieldName) => {
     try {
       const data = [];
-      const q = query(collection(db, "users", uid, "reclamations"), where(settingDataName, "==", fieldName));
+      const q = query(
+        collection(db, "users", uid, "reclamations"),
+        where(settingDataName, "==", fieldName)
+      );
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
+      querySnapshot.forEach((doc) => data.push({ id: doc.id, ...doc.data() }));
       return data.length;
     } catch (error) {
       console.log(error);
       return;
     }
-  }
+  };
 
   const fieldNameDuplicated = (data) => {
     return data.some((el) => el.name === state.fieldValue);
-  }
+  };
 
   const handleDelete = async (id, fieldName) => {
     errorReset();
 
     try {
       const inUse = await fieldInUse(fieldName);
-      if(inUse) {
-        setErrors((prevState) => ({...prevState, fieldInUse: true}));
+      if (inUse) {
+        setErrors((prevState) => ({ ...prevState, fieldInUse: true }));
         return;
       }
 
@@ -100,15 +119,15 @@ const [errors, setErrors] = useState({
       dataCopy = dataCopy.filter((el) => el.id !== id);
       await update(dataCopy);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleAdd = async () => {
     errorReset();
 
-    if(state.fieldValue.length < 3) {
-      setErrors((prevState) =>({ ...prevState, fieldValidation: true }));
+    if (state.fieldValue.length < 3) {
+      setErrors((prevState) => ({ ...prevState, fieldValidation: true }));
       return;
     }
 
@@ -116,47 +135,54 @@ const [errors, setErrors] = useState({
     const duplicated = fieldNameDuplicated(dataCopy);
 
     if (duplicated) {
-      setErrors((prevState) =>({ ...prevState, fieldExist: true }));
-      return
+      setErrors((prevState) => ({ ...prevState, fieldExist: true }));
+      return;
     }
-    
-    dataCopy.push({id: crypto.randomUUID(), name: state.fieldValue});
-    setErrors((prevState) =>({ ...prevState, fieldExist: false }));
-    await update(dataCopy);
-  }
 
-if (errors.settingsDataError) return <p>Błąd wczytywania ustawienia, spróbuj ponownie</p>
-if (state.loading) return <p>Ładowanie ustawień...</p>
-else return (
-    <div>
+    dataCopy.push({ id: crypto.randomUUID(), name: state.fieldValue });
+    setErrors((prevState) => ({ ...prevState, fieldExist: false }));
+    await update(dataCopy);
+  };
+
+  if (errors.settingsDataError)
+    return <p>Błąd wczytywania ustawienia, spróbuj ponownie</p>;
+  if (state.loading) return <p>Ładowanie ustawień...</p>;
+  else
+    return (
+      <div>
         <h3>{label}</h3>
         <ul>
           {settingsData[settingDataName].map((el, index) => (
             <li key={index}>
               {el.name}
-              {el.id !== null &&
-              <button onClick={() => handleDelete(el.id, el.name)}>usuń</button>
-              }
+              {el.id !== null && (
+                <button onClick={() => handleDelete(el.id, el.name)}>
+                  usuń
+                </button>
+              )}
             </li>
           ))}
         </ul>
         <p>
-        <label htmlFor="addSettingData">Dodaj wartość</label>
-        <input
-          type="text"
-          onChange={handleOnChange}
-          name="addSettingData"
-          value={state.fieldValue}
-          id="addSettingData"
-        />
-        <span>
-          {errors.fieldExist && `${label} o takiej nazwie już istnieje, wpisz inną nazwę`}
-          {errors.fieldInUse && `podana wartość jest w użyciu, zmień wartość w zleceniach na inną i wróć by ją usunąć`}
-          {errors.fieldValidation && `wartość musi mieć przynajmniej 3 znaki` }
-        </span>
-      </p>
-      <button onClick={handleAdd}>Dodaj</button>
-    </div>)
+          <label htmlFor="addSettingData">Dodaj wartość</label>
+          <input
+            type="text"
+            onChange={handleOnChange}
+            name="addSettingData"
+            value={state.fieldValue}
+            id="addSettingData"
+          />
+          <span>
+            {errors.fieldExist &&
+              `${label} o takiej nazwie już istnieje, wpisz inną nazwę`}
+            {errors.fieldInUse &&
+              `podana wartość jest w użyciu, zmień wartość w zleceniach na inną i wróć by ją usunąć`}
+            {errors.fieldValidation && `wartość musi mieć przynajmniej 3 znaki`}
+          </span>
+        </p>
+        <button onClick={handleAdd}>Dodaj</button>
+      </div>
+    );
 }
 
 export default SettingDefinition;

@@ -1,0 +1,64 @@
+@use "./variables.scss";
+
+@font-face {
+  font-family: "Roboto";
+  src: local("Roboto"),
+    url(../assets/fonts/Roboto-VariableFont_wdth\wght.woff2) format("woff");
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
+}
+
+#root {
+  margin: 0 auto;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: variables.$radius;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+  transition: variables.$transition;
+  box-shadow: variables.$light-shadow;
+  border: none;
+  user-select: none;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: variables.$standard-shadow;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: variables.$light-shadow;
+  }
+
+  &--primary {
+    background-color: variables.$color-primary;
+    color: variables.$color-text-alt;
+
+    &:hover {
+      background-color: variables.$color-primary-hover;
+    }
+  }
+
+  &--secondary {
+    background-color: variables.$color-text-alt;
+    color: variables.$color-primary;
+    border: 2px solid variables.$color-primary;
+
+    &:hover {
+      background-color: variables.$color-text-alt;
+    }
+  }
+}

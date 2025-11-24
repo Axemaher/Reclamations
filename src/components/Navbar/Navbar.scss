@@ -1,64 +1,62 @@
-@use '../Layout/Layout.scss';
+@use "../../global_styles/variables.scss";
 
 .navbar {
   width: 100%;
   height: 60px;
-  background-color: Layout.$color-primary;
-  color: Layout.$color-text-alt;
+  background-color: variables.$color-primary;
+  color: variables.$color-text-alt;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1.5rem;
-  box-shadow: Layout.$standard-shadow;
-  z-index: 00000;
+  box-shadow: variables.$standard-shadow;
+  z-index: 1;
 }
 
-.navbar .logo {
+.logo {
   font-size: 1.2rem;
   font-weight: 600;
 }
 
-.navbar .menu {
+.menu {
   display: flex;
   gap: 1rem;
 
-  .menu-link {
+  &__link {
     position: relative;
-    color: Layout.$color-border;
+    color: variables.$color-border;
     text-decoration: none;
     font-weight: 500;
     padding: 0.25rem 0;
-    transition: color 0.3s ease;
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       bottom: 0;
       width: 100%;
       height: 2px;
-      background-color: Layout.$color-border;
+      background-color: variables.$color-border;
       transform: scaleY(0);
       transform-origin: bottom;
-      transition: transform 0.25s ease-out;
+      transition: variables.$transition;
     }
 
     &:hover::after {
       transform: scaleY(1);
     }
 
-    &.active::after {
+    &--active::after {
       transform: scaleY(1);
     }
 
-    &.active {
-      color: Layout.$color-border;
-      font-weight: 600;
+    &--active {
+      color: variables.$color-border;
     }
   }
 }
 
-.navbar .hamburger {
+.hamburger {
   display: none;
   flex-direction: column;
   justify-content: center;
@@ -66,50 +64,50 @@
   width: 24px;
   height: 24px;
 
-  span {
-    background: Layout.$color-border;
+  &__line {
+    background: variables.$color-border;
     height: 3px;
     width: 100%;
     margin: 3px 0;
     border-radius: 2px;
-    transition: all 0.3s ease;
+    transition: variables.$transition;
   }
 }
 
 @media (max-width: 768px) {
-  .navbar .menu {
+  .menu {
     position: absolute;
     top: 60px;
     right: 0;
-    background-color: Layout.$color-primary;
+    background-color: variables.$color-primary;
     flex-direction: column;
     width: 180px;
     padding: 1rem;
     display: none;
-    box-shadow: Layout.$standard-shadow;
+    box-shadow: variables.$standard-shadow;
     border-radius: 0 0 6px 6px;
 
-    .menu-link {
+    &__link {
       padding: 0.5rem 0;
     }
   }
 
-  .navbar .hamburger {
+  .hamburger {
     display: flex;
   }
 
-  .navbar.active .menu {
+  .navbar--active .menu {
     display: flex;
   }
 
-  .navbar.active .hamburger span:nth-child(1) {
+  .navbar--active .hamburger__line:nth-child(1) {
     transform: rotate(45deg) translateY(11px);
     margin-left: 9px;
   }
-  .navbar.active .hamburger span:nth-child(2) {
+  .navbar--active .hamburger__line:nth-child(2) {
     opacity: 0;
   }
-  .navbar.active .hamburger span:nth-child(3) {
+  .navbar--active .hamburger__line:nth-child(3) {
     transform: rotate(-45deg) translateY(-11px);
     margin-left: 9px;
   }

@@ -1,10 +1,11 @@
 import ReclamationForm from "../../components/ReclamationForm/ReclamationForm";
 
 function AddReclamationPage() {
-  return <>
-    <h1>Add reclamation form</h1>
-    <ReclamationForm mode={'add'}/>
-  </>
+  return (
+    <div className="add-reclamation-page">
+      <ReclamationForm mode={"add"} />
+    </div>
+  );
 }
 
 export default AddReclamationPage;
